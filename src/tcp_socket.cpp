@@ -1,17 +1,11 @@
 #include "tcp_socket.hpp"
 
 #include "clients.hpp"
-#include "http_request.hpp"
-#include "http_response.hpp"
-#include "thread_pool.hpp"
 
-#include <chrono>
-#include <ctime>
 #include <errno.h>
 #include <fcntl.h>
 #include <functional>
 #include <future>
-#include <iostream>
 #include <netinet/in.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -23,7 +17,7 @@ static void process(clients::clients_s &clients, int num_fds) {
         if (clients.p_clients[i].revents & POLLIN) {
             // TODO: delegate handle_request to threadpool in the future
             // for now use std::async
-            auto result = std::async(std::launch::async, http_request::handle_request, i);
+            //auto result = std::async(std::launch::async, http_request::handle_request, i);
             //http_request::handle_request(i);
             num_fds--;
         }
@@ -68,8 +62,7 @@ void tcp_socket::do_accept(const int sockfd, struct sockaddr_in *addr)
     int clientfd, flags;
 
     while (1) {
-        if ((clientfd = accept(sockfd, (struct sockaddr *)addr,
-                                                    &addrsz)) < 0) {
+        if ((clientfd = accept(sockfd, (struct sockaddr *)addr, &addrsz)) < 0) {
             fprintf(stderr, "tcp_server::do_accept() failed");
             exit(-1);
         }
@@ -90,7 +83,7 @@ void tcp_socket::do_poll()
     while (1) {
 		num_fds = poll(clients.p_clients.data(),
                        clients.number_of_clients,
-                       1); // 0.5s timeout, so that new clients are polled
+                       1); // timeout so when new clients connect they are polled
 		if (num_fds > 0) {
 			process(clients, num_fds);
 		} else if (num_fds < 0) { // poll error

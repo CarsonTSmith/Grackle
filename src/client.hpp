@@ -1,27 +1,22 @@
 #pragma once
 
-#include "http_header.hpp"
-
 #include <string>
 
 namespace client {
 
-    static const int BUF_SIZE = 8196;
+    constexpr int BODY_SIZE   = 8196;
+    constexpr int HEADER_SIZE = 8;
 
     struct client_t {
-        std::string header_str;
-        int header_bytes_read = 0;
-        bool headers_finished = false;
-        http_header::http_header_s headers;
-
+        std::string header;
         std::string body;
-        int body_length = 0;
-        int body_bytes_read = 0;
+        bool        header_done = false;
+        int         body_length = 0;
         
         client_t()
         {
-            header_str.resize(BUF_SIZE);
-            body.resize(BUF_SIZE);
+            header.resize(HEADER_SIZE);
+            body.resize(BODY_SIZE);
         }
     };
 

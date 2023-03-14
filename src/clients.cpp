@@ -45,7 +45,8 @@ void clients::reset(const int index) {
     clients.p_clients[index].revents = 0;
 
     clients.c_clients[index].body.clear();
-    clients.c_clients[index].headers.headers.clear();
+    clients.c_clients[index].header.clear();
+    clients.c_clients[index].header_done = false;
     
     clients.number_of_clients--;
 

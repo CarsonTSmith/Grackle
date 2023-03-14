@@ -8,7 +8,7 @@
 
 namespace clients {
 
-    const int MAX_CLIENTS = 512;
+    const int MAX_CLIENTS = 64;
 
     // Singleton
     struct clients_s {
