@@ -1,6 +1,7 @@
 #include "tcp_socket.hpp"
 
 #include "clients.hpp"
+#include "request.hpp"
 
 #include <errno.h>
 #include <fcntl.h>
@@ -17,8 +18,7 @@ static void process(clients::clients_s &clients, int num_fds) {
         if (clients.p_clients[i].revents & POLLIN) {
             // TODO: delegate handle_request to threadpool in the future
             // for now use std::async
-            //auto result = std::async(std::launch::async, http_request::handle_request, i);
-            //http_request::handle_request(i);
+            auto result = std::async(std::launch::async, request::handle_request, i);
             num_fds--;
         }
     }
