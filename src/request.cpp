@@ -17,13 +17,10 @@ constexpr int BODY_READ_ERROR   = -2;
 
 static inline uint32_t convert_header_to_num(const char *header)
 {
-	char msgsz[client::HEADER_SIZE + 1];
-	char *endptr;
+    char *endptr;
 	int ret;
 
-	memcpy(msgsz, header, client::HEADER_SIZE + 1);
-	msgsz[client::HEADER_SIZE] = '\0';
-	ret = strtol(msgsz, &endptr, 10);
+	ret = strtol(header, &endptr, 10);
 	if (ret >= 0)
 		return ret;
 
