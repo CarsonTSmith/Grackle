@@ -6,9 +6,7 @@
 #include <string>
 #include <unistd.h>
 
-namespace response {
-    std::mutex write_mutex;
-}
+std::mutex response::write_mutex;
 
 void response::echo(const int index)
 {
