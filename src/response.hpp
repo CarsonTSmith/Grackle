@@ -9,5 +9,6 @@ namespace response {
 
     void send(const int index, const std::string &msg);
     void echo(const int index);
+    void send_to_all(const int index);
 
 } // END Namespace response

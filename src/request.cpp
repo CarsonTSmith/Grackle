@@ -85,7 +85,7 @@ static inline void do_read_body(const int index)
     case BODY_DONE:
         // perform the request
         // then reset client buffers
-        response::echo(index); // send the message body back to sender
+        response::send_to_all(index); // send the message to all clients
         clients.c_clients[index].reset();
         break;
     case BODY_NOT_DONE:

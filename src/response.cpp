@@ -8,6 +8,17 @@
 
 std::mutex response::write_mutex;
 
+void response::send_to_all(const int index)
+{
+    auto &clients = clients::clients_s::get_instance();
+    for (int i = 0; (size_t)i < clients.p_clients.size(); ++i) {
+        if (clients.p_clients[i].fd == -1)
+            continue;
+
+        response::send(i, clients.c_clients[index].header);
+    }
+}
+
 void response::echo(const int index)
 {
     auto &clients = clients::clients_s::get_instance();
