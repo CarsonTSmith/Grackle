@@ -15,6 +15,5 @@ int main(int argc, char *argv[])
     sockfd = tcp_socket::start(&addr);
     std::thread accept_thread(tcp_socket::do_accept, sockfd, &addr);
     tcp_socket::do_poll();
-
     return 0;
 }
