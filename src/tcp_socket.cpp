@@ -83,7 +83,7 @@ void tcp_socket::do_poll()
     while (1) {
 		num_fds = poll(clients.p_clients.data(),
                        clients.number_of_clients,
-                       1); // timeout so when new clients connect they are polled
+                       500); // timeout so when new clients connect they are polled
 		if (num_fds > 0) {
 			process(clients, num_fds);
 		} else if (num_fds < 0) { // poll error

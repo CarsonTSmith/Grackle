@@ -1,5 +1,6 @@
 #include "response.hpp"
 
+#include "chatlog.hpp"
 #include "clients.hpp"
 
 #include <mutex>
@@ -46,4 +47,6 @@ void response::send(const int index, const std::string &msg)
             return;
         }
     }
+
+    chatlog::chatlog.add(msg);
 }
