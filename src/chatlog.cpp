@@ -2,7 +2,6 @@
 
 #include <fstream>
 #include <mutex>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -15,7 +14,6 @@ static void init_chatlog(std::fstream &chatlog)
     char cwd[256], chatlogdir[300];
 
     getcwd(cwd, sizeof(cwd));
-    printf("%s", cwd);
     if (cwd == nullptr)
         return; // error
 

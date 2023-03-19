@@ -10,6 +10,7 @@ namespace chatlog {
 
     struct chatlog_t {
         std::fstream chatlog;
+        std::mutex   write_mutex;
 
         chatlog_t();
         ~chatlog_t()
@@ -22,6 +23,7 @@ namespace chatlog {
         {
             std::string msg_to_save = msg;
             msg_to_save.append(chatlog_delim); // append delimiter, \n won't work
+            std::lock_guard<std::mutex> lk(write_mutex);
             chatlog << msg_to_save << std::endl; // endl flushes to disk
         }
     };
