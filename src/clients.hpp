@@ -20,11 +20,7 @@ namespace clients {
             clients_s(const clients_s &) = delete;
             clients_s &operator=(const clients_s &) = delete;
 
-            static clients_s &get_instance()
-            {
-                static clients_s s;
-                return s;
-            }
+            static clients_s &get_instance();
 
         private:
             clients_s();

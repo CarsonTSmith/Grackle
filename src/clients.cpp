@@ -15,6 +15,12 @@ clients::clients_s::clients_s()
         p_client.fd = -1;
 }
 
+clients::clients_s &clients::clients_s::get_instance()
+{
+    static clients::clients_s s;
+    return s;
+}
+
 void clients::init()
 {
     clients::clients_s::get_instance();

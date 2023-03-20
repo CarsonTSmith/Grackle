@@ -29,36 +29,36 @@ int tcp_socket::start(struct sockaddr_in *addr)
     int sockfd, opt = 1;
 
     if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-            fprintf(stderr, "socket failed");
+            fprintf(stderr, "tcp socket failed");
             exit(errno);
     }
 
     if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
-            fprintf(stderr, "setsockopt");
+            fprintf(stderr, "tcp setsockopt failed");
             exit(errno);
     }
 
     addr->sin_family = AF_INET;
     addr->sin_addr.s_addr = INADDR_ANY;
-    addr->sin_port = htons(PORT);
+    addr->sin_port = htons(TCP_PORT);
 
     if (bind(sockfd, (struct sockaddr *)addr, sizeof(*addr)) < 0) {
-            fprintf(stderr, "bind failed");
+            fprintf(stderr, "tcp bind failed");
             exit(errno);
     }
 
     if (listen(sockfd, clients::MAX_CLIENTS) < 0) {
-            fprintf(stderr, "listen failed");
+            fprintf(stderr, "tcp listen failed");
             exit(errno);
     }
 
-    printf("server successfully started\n");
+    printf("TCP Server started\n");
     return sockfd;
 }
 
 void tcp_socket::do_accept(const int sockfd, struct sockaddr_in *addr)
 {
-    socklen_t addrsz = sizeof(*addr);;
+    socklen_t addrsz = sizeof(*addr);
     int clientfd, flags;
 
     while (1) {

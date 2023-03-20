@@ -17,21 +17,9 @@ namespace client {
         uint32_t header_bytes_rd = 0;
         uint32_t body_bytes_rd   = 0;
         
-        client_t()
-        {
-            memset(header, 0, sizeof(header));
-            memset(body, 0, sizeof(body));
-        }
+        client_t();
 
-        void reset()
-        {
-            memset(header, 0, sizeof(header));
-            memset(body, 0, sizeof(body));
-            header_done     = false;
-            body_length     = 0;
-            header_bytes_rd = 0;
-            body_bytes_rd   = 0;
-        }
+        void reset();
     };
 
 } // END namespace client

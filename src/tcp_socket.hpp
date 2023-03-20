@@ -5,7 +5,7 @@
 
 namespace tcp_socket {
 
-    const int PORT = 8085;
+    constexpr int TCP_PORT = 42125;
 
     int  start(struct sockaddr_in *addr);
     void do_accept(const int sockfd, struct sockaddr_in *addr);
