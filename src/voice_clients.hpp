@@ -2,9 +2,11 @@
 
 #include "voice_client.hpp"
 
-#include <vector>
+#include <forward_list>
 
-namespace voiceclients {
+namespace voice_clients {
 
-    extern std::vector<voiceclient::voiceclient_t> clients;
+    extern std::forward_list<voice_client::voice_client_t> clients;
+
+    void do_prune_clients();
 }

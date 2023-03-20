@@ -3,6 +3,7 @@
 #include "tcp_socket.hpp"
 #include "udp_socket.hpp"
 #include "voice_chat.hpp"
+#include "voice_clients.hpp"
 
 #include <netinet/in.h>
 #include <signal.h>
@@ -17,8 +18,9 @@ int main(int argc, char *argv[])
     clients::init();
     tcp_sockfd = tcp_socket::start(&addr);
     udp_sockfd = udp_socket::start();
-    std::thread voicechat_thread(voicechat::process, udp_sockfd);
-    std::thread accept_thread(tcp_socket::do_accept, tcp_sockfd, &addr); // TCP accept
-    tcp_socket::do_poll(); // Poll TCP client fds
+    std::thread udp_prune_thread(voice_clients::do_prune_clients);
+    std::thread voicechat_thread(voice_chat::process, udp_sockfd);
+    std::thread accept_thread(tcp_socket::do_accept, tcp_sockfd, &addr);
+    tcp_socket::do_poll();
     return 0;
 }

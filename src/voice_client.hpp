@@ -3,11 +3,13 @@
 #include <netinet/in.h>
 #include <stdint.h>
 
-namespace voiceclient {
+namespace voice_client {
 
-    struct voiceclient_t {
+    struct voice_client_t {
         
-        uint64_t        last_message_time; // seconds since epoch
+        uint64_t        last_message_time; // milliseconds since epoch
         struct sockaddr addr;
     };
+
+    bool operator==(const voice_client_t &rhs, const voice_client_t &lhs);
 }
