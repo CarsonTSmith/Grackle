@@ -45,6 +45,7 @@ static void format_history_to_send(const int index, std::string &msg)
         response::send(index, msg, false);
 }
 
+// This gets the LAST len bytes from the chatlog file
 static void get_chatlog_text(char *buf, const int len)
 {
     int fd;

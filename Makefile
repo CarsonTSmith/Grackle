@@ -33,7 +33,9 @@ clean : ; @rm -rf $(APPNAME) $(DEPDIR)/*.d $(ODIR)/*.o
 
 # Build the application by running the link step with all objfile inputs
 $(APPNAME) : $(OBJFILES)
-	$(CXX) $(LDFLAGS) $^ -o $(APPNAME)
+	@echo Linking Grackle
+	@$(CXX) $(LDFLAGS) $^ -o $(APPNAME)
+	@echo Grackle built successfully
 
 # Add all warnings/errors to cflags default.  This is not required but is a best practice
 CFLAGS += -std=c++17 -g -Wall -Werror
@@ -70,7 +72,8 @@ COMPILE.cpp = $(CXX) $(DEPFLAGS) $(CFLAGS) $(CPPFLAGS) $(INC) -c
 # the targets won't get rebuilt when the timestamp on DEPDIR changes
 # See https://www.gnu.org/software/make/manual/html_node/Prerequisite-Types.html for order only prerequesites overview.
 $(ODIR)/%.o : $(SDIR)/%.cpp $(DEPDIR)/%.d | $(DEPDIR)
-	$(COMPILE.cpp) $(OUTPUT_OPTION) $<
+	@$(COMPILE.cpp) $(OUTPUT_OPTION) $<
+	@echo Building $@
 
 $(BDIR): ; @mkdir -p $@
 # Create the DEPDIR when it doesn't exist
