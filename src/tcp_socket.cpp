@@ -1,5 +1,6 @@
 #include "tcp_socket.hpp"
 
+#include "chatlog.hpp"
 #include "clients.hpp"
 #include "request.hpp"
 
@@ -59,7 +60,7 @@ int tcp_socket::start(struct sockaddr_in *addr)
 void tcp_socket::do_accept(const int sockfd, struct sockaddr_in *addr)
 {
     socklen_t addrsz = sizeof(*addr);
-    int clientfd, flags;
+    int clientfd, flags, index;
 
     while (1) {
         if ((clientfd = accept(sockfd, (struct sockaddr *)addr, &addrsz)) < 0) {
@@ -70,8 +71,11 @@ void tcp_socket::do_accept(const int sockfd, struct sockaddr_in *addr)
         flags = fcntl(clientfd, F_GETFL, 0);
         fcntl(clientfd, F_SETFL, flags | O_NONBLOCK);
 
-        if (clients::add(clientfd) < 0)
+        index = clients::add(clientfd);
+        if (index < 0)
             close(clientfd);
+        else
+            auto result = std::async(std::launch::async, chatlog::send_history, index);
     }
 }
 

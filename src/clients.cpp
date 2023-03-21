@@ -26,22 +26,24 @@ void clients::init()
     clients::clients_s::get_instance();
 }
 
+// return the new client's index
 int clients::add(const int fd)
 {
     auto &clients = clients_s::get_instance();
     if (clients.number_of_clients > (int)clients.p_clients.size())
         return -1;
 
-    for (auto &p_client: clients.p_clients) {
-        if (p_client.fd == -1) {
-            p_client.fd = fd;
-            p_client.events = POLLIN | POLLPRI;
+    for (int i = 0; i < (int)clients.p_clients.size(); ++i) {
+        if (clients.p_clients[i].fd == -1) {
+            clients.p_clients[i].fd = fd;
+            clients.p_clients[i].events = POLLIN | POLLPRI;
             clients.number_of_clients++;
+            return i;
             break;
         }
     }
 
-    return 0;
+    return -1;
 }
 
 // reset tcp connection and reset client

@@ -22,9 +22,13 @@ static void send_to_one(const int udp_sockfd,
 
 static void send_to_all(const int udp_sockfd,
                         const char *msg,
+                        const struct sockaddr *addr,
                         socklen_t addr_size)
 {
     for (const auto &client: voice_clients::clients) {
+        if (memcmp(&client.addr, addr, sizeof(struct sockaddr)) == 0)
+            continue; // don't send to owner
+
         send_to_one(udp_sockfd, msg, &client.addr, addr_size);
     }
 }
@@ -41,7 +45,8 @@ void voice_chat::process(const int udp_sockfd)
             printf("Couldn't receive udp message\n");
         }
 
-        send_to_all(udp_sockfd, msg, addr_size); //TODO: use client addr
+        voice_clients::add_client(&addr);
+        send_to_all(udp_sockfd, msg, &addr, addr_size); //TODO: use client addr
         memset(msg, 0, sizeof(msg));
     }
 }

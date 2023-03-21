@@ -16,17 +16,17 @@ void response::send_to_all(const int index)
         if (clients.p_clients[i].fd == -1)
             continue;
 
-        response::send(i, clients.c_clients[index].header);
+        response::send(i, clients.c_clients[index].header, true);
     }
 }
 
 void response::echo(const int index)
 {
     auto &clients = clients::clients_s::get_instance();
-    response::send(index, clients.c_clients[index].header);
+    response::send(index, clients.c_clients[index].header, true);
 }
 
-void response::send(const int index, const std::string &msg)
+void response::send(const int index, const std::string &msg, const bool record_msg)
 {
     size_t result = 0, total = 0;
 
@@ -48,5 +48,6 @@ void response::send(const int index, const std::string &msg)
         }
     }
 
-    chatlog::chatlog.add(msg);
+    if (record_msg)
+        chatlog::chatlog.add(msg);
 }
