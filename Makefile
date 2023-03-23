@@ -1,4 +1,4 @@
-DEBUG := 1 # Change to 0 for release version
+DEBUG = 0 # Change to 0 for release version
 
 # See http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
 # for the template used to start this file
@@ -20,13 +20,20 @@ APPNAME := $(BDIR)/grackle
 # https://www.gnu.org/software/make/manual/html_node/Substitution-Refs.html#Substitution-Refs for substitution references overview
 OBJFILES := $(SRCS:$(SDIR)/%.cpp=$(ODIR)/%.o)
 
+# Add all warnings/errors to cflags default.  This is not required but is a best practice
+CFLAGS := -std=c++17 -Wall -Werror
+
+CFLAGS += -O2
+#CFLAGS += -g -O0
+
 # Build the app you've specified in APPNAME for the "all" or "default" target
 all : dirs $(APPNAME)
+
 default : dirs $(APPNAME)
 
 dirs:
 	@mkdir -p $(ODIR)
-	@mkdir -p $(BDIR)	 
+	@mkdir -p $(BDIR)
 
 # Remove all build intermediates and output file
 clean : ; @rm -rf $(APPNAME) $(DEPDIR)/*.d $(ODIR)/*.o
@@ -36,13 +43,6 @@ $(APPNAME) : $(OBJFILES)
 	@echo Linking Grackle
 	@$(CXX) $(LDFLAGS) $^ -o $(APPNAME)
 	@echo Grackle built successfully
-
-# Add all warnings/errors to cflags default.  This is not required but is a best practice
-CFLAGS += -std=c++17 -g -Wall -Werror
-
-ifeq ($(DEBUG), 0)
-CFLAGS += -O2 # Release flags
-endif
 
 # The below content is from  http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
 # with the following changes:

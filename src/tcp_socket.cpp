@@ -29,14 +29,15 @@ int tcp_socket::start(struct sockaddr_in *addr)
 {
     int sockfd, opt = 1;
 
-    if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-            fprintf(stderr, "tcp socket failed");
-            exit(errno);
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (sockfd < 0) {
+        fprintf(stderr, "tcp socket failed");
+        exit(errno);
     }
 
     if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
-            fprintf(stderr, "tcp setsockopt failed");
-            exit(errno);
+        fprintf(stderr, "tcp setsockopt failed");
+        exit(errno);
     }
 
     addr->sin_family = AF_INET;
@@ -44,13 +45,13 @@ int tcp_socket::start(struct sockaddr_in *addr)
     addr->sin_port = htons(TCP_PORT);
 
     if (bind(sockfd, (struct sockaddr *)addr, sizeof(*addr)) < 0) {
-            fprintf(stderr, "tcp bind failed");
-            exit(errno);
+        fprintf(stderr, "tcp bind failed");
+        exit(errno);
     }
 
     if (listen(sockfd, clients::MAX_CLIENTS) < 0) {
-            fprintf(stderr, "tcp listen failed");
-            exit(errno);
+        fprintf(stderr, "tcp listen failed");
+        exit(errno);
     }
 
     printf("TCP Server started\n");
@@ -63,7 +64,8 @@ void tcp_socket::do_accept(const int sockfd, struct sockaddr_in *addr)
     int clientfd, flags, index;
 
     while (1) {
-        if ((clientfd = accept(sockfd, (struct sockaddr *)addr, &addrsz)) < 0) {
+        clientfd = accept(sockfd, (struct sockaddr *)addr, &addrsz);
+        if (clientfd < 0) {
             fprintf(stderr, "tcp_server::do_accept() failed");
             exit(-1);
         }

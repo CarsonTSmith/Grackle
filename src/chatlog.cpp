@@ -49,30 +49,38 @@ static void format_history_to_send(const int index, std::string &msg)
 static void get_chatlog_text(char *buf, const int len)
 {
     int fd;
+    ssize_t result;
     struct stat sb;
 
     std::lock_guard<std::mutex> lk(chatlog::chatlog.write_mutex);
     fd = open(chatlog::chatlog.filepath.c_str(), O_RDONLY);
     fstat(fd, &sb);
     if (sb.st_size >= len)
-        pread(fd, buf, len, sb.st_size - len);
+        result = pread(fd, buf, len, sb.st_size - len); // TODO: put this in a while loop
     else
-        pread(fd, buf, sb.st_size, 0);
+        result = pread(fd, buf, sb.st_size, 0); // TODO: put this in a while loop
+
+    if (result)
+        return;
 }
 
 void chatlog::chatlog_t::init()
 {
-    char cwd[256], chatlogdir[300];
+    char *cwd, chatlogdir[1000];
 
-    getcwd(cwd, sizeof(cwd));
+
+    cwd = getcwd(nullptr, 0);
     if (cwd == nullptr)
-        return; // error
+        goto out;
 
     sprintf(chatlogdir, "%s/chatlog", cwd);
     mkdir(chatlogdir, 0777); // all permissions
     strcat(chatlogdir, "/chatlog.txt");
     chatlog.open(chatlogdir, std::fstream::app);
     filepath = chatlogdir;
+
+out:
+    free(cwd);
 }
 
 chatlog::chatlog_t::chatlog_t()
@@ -97,7 +105,7 @@ void chatlog::chatlog_t::add(const std::string &msg)
 
 void chatlog::send_history(const int index)
 {
-    char buf[1000];
+    char buf[10000];
     std::string text;
 
     if (!chatlog::chatlog.chatlog.is_open()) {

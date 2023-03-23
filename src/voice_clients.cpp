@@ -28,6 +28,9 @@ static bool client_already_exists(const struct sockaddr *addr)
 
 static void prune_clients()
 {
+    if (voice_clients::clients.empty())
+        return;
+
     uint64_t time = std::chrono::duration_cast<std::chrono::milliseconds>
                     (std::chrono::system_clock::now().time_since_epoch()).count();
     std::lock_guard<std::mutex> lk(voice_clients::clients_mutex);

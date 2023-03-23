@@ -48,6 +48,6 @@ void response::send(const int index, const std::string &msg, const bool record_m
         }
     }
 
-    if (record_msg)
-        chatlog::chatlog.add(msg);
+    //if (record_msg)
+    //    chatlog::chatlog.add(msg);
 }
