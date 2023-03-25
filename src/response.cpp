@@ -12,7 +12,7 @@ std::mutex response::write_mutex;
 void response::send_to_all(const int index)
 {
     auto &clients = clients::clients_s::get_instance();
-    for (int i = 0; (size_t)i < clients.p_clients.size(); ++i) {
+    for (int i = 0; (size_t)i < clients::MAX_CLIENTS; ++i) {
         if (clients.p_clients[i].fd == -1)
             continue;
 
@@ -40,6 +40,9 @@ void response::send(const int index, const std::string &msg, const bool record_m
         if (result > 0) {
             total += result;
         } else if (result == 0) {
+            if ((errno == EAGAIN) || (errno == EWOULDBLOCK))
+                return;
+                
             clients::reset(index);
             return;
         } else if (result < 0) {

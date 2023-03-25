@@ -12,10 +12,11 @@ namespace clients {
 
     // Singleton
     struct clients_s {
+        
         public:
-            std::atomic<int>              number_of_clients;
-            std::vector<pollfd>           p_clients;
-            std::vector<client::client_t> c_clients;
+            std::atomic<int> number_of_clients;
+            pollfd           p_clients[MAX_CLIENTS];
+            client::client_t c_clients[MAX_CLIENTS];
 
             clients_s(const clients_s &) = delete;
             clients_s &operator=(const clients_s &) = delete;

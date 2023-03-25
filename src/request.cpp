@@ -116,6 +116,7 @@ static inline void do_read_header(const int index)
 int request::handle_request(const int index)
 {
     auto &clients = clients::clients_s::get_instance();
+    std::lock_guard<std::mutex> lk(clients.c_clients[index].mutex);
     if (clients.c_clients[index].header_done == true) {
         do_read_body(index);
     } else {

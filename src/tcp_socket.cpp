@@ -18,8 +18,9 @@ static void process(clients::clients_s &clients, int num_fds) {
     for (int i = 0; (num_fds > 0) && (i < clients::MAX_CLIENTS); ++i) {
         if (clients.p_clients[i].revents & POLLIN) {
             // TODO: delegate handle_request to threadpool in the future
-            // for now use std::async
-            auto result = std::async(std::launch::async, request::handle_request, i);
+            // for now spin off a thread
+            std::thread handle_request_thread(request::handle_request, i);
+            handle_request_thread.detach();
             num_fds--;
         }
     }
@@ -74,10 +75,13 @@ void tcp_socket::do_accept(const int sockfd, struct sockaddr_in *addr)
         fcntl(clientfd, F_SETFL, flags | O_NONBLOCK);
 
         index = clients::add(clientfd);
-        if (index < 0)
+        if (index < 0) {
             close(clientfd);
-        else
-            auto result = std::async(std::launch::async, chatlog::send_history, index);
+        }
+        //else {
+        //    std::thread send_history_thread(chatlog::send_history, index);
+        //    send_history_thread.detach();
+        //}
     }
 }
 
@@ -87,8 +91,8 @@ void tcp_socket::do_poll()
     auto &clients = clients::clients_s::get_instance();
 
     while (1) {
-		num_fds = poll(clients.p_clients.data(),
-                       clients.number_of_clients,
+		num_fds = poll(clients.p_clients,
+                       clients::MAX_CLIENTS,
                        500); // timeout so when new clients connect they are polled
 		if (num_fds > 0) {
 			process(clients, num_fds);

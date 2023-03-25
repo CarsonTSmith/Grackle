@@ -70,8 +70,10 @@ void chatlog::chatlog_t::init()
 
 
     cwd = getcwd(nullptr, 0);
-    if (cwd == nullptr)
-        goto out;
+    if (cwd == nullptr) {
+        free(cwd);
+        return;
+    }
 
     sprintf(chatlogdir, "%s/chatlog", cwd);
     mkdir(chatlogdir, 0777); // all permissions
@@ -79,7 +81,6 @@ void chatlog::chatlog_t::init()
     chatlog.open(chatlogdir, std::fstream::app);
     filepath = chatlogdir;
 
-out:
     free(cwd);
 }
 

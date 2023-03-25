@@ -8,9 +8,6 @@
 
 clients::clients_s::clients_s()
 {
-    p_clients.resize(MAX_CLIENTS);
-    c_clients.resize(MAX_CLIENTS);
-
     for (auto &p_client: p_clients)
         p_client.fd = -1;
 }
@@ -30,16 +27,15 @@ void clients::init()
 int clients::add(const int fd)
 {
     auto &clients = clients_s::get_instance();
-    if (clients.number_of_clients > (int)clients.p_clients.size())
+    if (clients.number_of_clients > MAX_CLIENTS)
         return -1;
 
-    for (int i = 0; i < (int)clients.p_clients.size(); ++i) {
+    for (int i = 0; i < MAX_CLIENTS; ++i) {
         if (clients.p_clients[i].fd == -1) {
             clients.p_clients[i].fd = fd;
             clients.p_clients[i].events = POLLIN | POLLPRI;
             clients.number_of_clients++;
             return i;
-            break;
         }
     }
 
@@ -47,7 +43,8 @@ int clients::add(const int fd)
 }
 
 // reset tcp connection and reset client
-void clients::reset(const int index) {
+void clients::reset(const int index) 
+{
     auto &clients = clients_s::get_instance();
     close(clients.p_clients[index].fd);
     clients.p_clients[index].fd      = -1;
