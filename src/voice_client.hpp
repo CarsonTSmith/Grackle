@@ -11,5 +11,5 @@ namespace voice_client {
         struct sockaddr addr;
     };
 
-    bool operator==(const voice_client_t &rhs, const voice_client_t &lhs);
+    bool operator==(const voice_client_t &lhs, const voice_client_t &rhs);
 }

@@ -16,7 +16,7 @@ constexpr int BODY_DONE         = 0;
 constexpr int BODY_NOT_DONE     = -1;
 constexpr int BODY_READ_ERROR   = -2;
 
-static inline uint32_t convert_header_to_num(const char *header)
+static uint32_t convert_header_to_num(const char *header)
 {
     char *endptr;
 	int ret;
@@ -28,7 +28,7 @@ static inline uint32_t convert_header_to_num(const char *header)
 	return 0;
 }
 
-static inline int read_header(const int index)
+static int read_header(const int index)
 {
     auto &clients = clients::clients_s::get_instance();
     const int bytesrd = read(clients.p_clients[index].fd,
@@ -54,7 +54,7 @@ static inline int read_header(const int index)
     return HEADER_NOT_DONE;
 }
 
-static inline int read_body(const int index)
+static int read_body(const int index)
 {
     auto &clients = clients::clients_s::get_instance();
     const auto bytesrd = read(clients.p_clients[index].fd,
@@ -77,14 +77,14 @@ static inline int read_body(const int index)
     return BODY_DONE;
 }
 
-static inline void do_read_body(const int index)
+static void do_read_body(const int index)
 {
     auto &clients = clients::clients_s::get_instance();
     int status = read_body(index);
     switch (status) {
     case BODY_DONE:
         // perform the request
-        // then reset client buffers
+        // then reset the client's buffers
         response::send_to_all(index); // send the message to all clients
         clients.c_clients[index].reset();
         break;
@@ -97,7 +97,7 @@ static inline void do_read_body(const int index)
     }
 }
 
-static inline void do_read_header(const int index)
+static void do_read_header(const int index)
 {
     int status = read_header(index);
     switch (status) {
