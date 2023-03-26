@@ -1,5 +1,8 @@
 #include "client.hpp"
 
+#include <exception>
+#include <json.hpp>
+
 client::client_t::client_t()
 {
     memset(header, 0, sizeof(header));
@@ -25,6 +28,11 @@ int client::client_t::body_to_json(json &json)
             break;
     }
 
-    json = &(body[i]);
+    try {
+        //json = json::parse(&(body[i]));
+    } catch (std::exception &e) {
+        return -1;
+    }
+    
     return 0;
 }
