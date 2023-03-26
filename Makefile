@@ -6,7 +6,7 @@ SDIR := src
 ODIR := .objs
 BDIR := bin
 
-INC := -I$(CURDIR)/libs/json/single_include
+INC := -I$(CURDIR)/libs/json/single_include/nlohmann
 # -- TODO: customize the list below for your project ---
 # List of source .c files used with the project
 SRCS := $(wildcard $(SDIR)/*.cpp)
