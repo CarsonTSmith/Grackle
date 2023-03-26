@@ -1,9 +1,12 @@
 #pragma once
 
+#include <json.hpp>
 #include <mutex>
 #include <stdint.h>
 #include <string>
 #include <string.h>
+
+using json = nlohmann::json;
 
 namespace client {
 
@@ -24,6 +27,7 @@ namespace client {
         client_t();
 
         void reset();
+        int  body_to_json(json &json);
     };
 
 } // END namespace client
