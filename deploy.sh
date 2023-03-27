@@ -2,7 +2,7 @@
 
 deploy () {
     username=carson
-    server_ip=167.224.158.29
+    server_ip=192.168.1.23
     remote_dir=/programs
     exe_path=$(pwd)/bin/grackle
     
@@ -17,9 +17,9 @@ deploy () {
         pkill -9 grackle
         exit
     "
-    if [ ! $? -eq 0 ]; then
-        exit 2
-    fi
+    #if [ ! $? -eq 0 ]; then
+    #    exit 2
+    #fi
 
     #copy over the new server exe
     scp $exe_path $username@$server_ip:$remote_dir

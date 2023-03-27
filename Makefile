@@ -1,4 +1,5 @@
-DEBUG = 0 # Change to 0 for release version
+# Change to 0 for release version
+DEBUG := 0
 
 # See http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
 # for the template used to start this file
@@ -31,18 +32,24 @@ CONT_OBJFILES := $(CONT_SRCS:$(CONT_DIR)/%.cpp=$(CONT_ODIR)/%.o)
 # Add all warnings/errors to cflags default.  This is not required but is a best practice
 CFLAGS := -std=c++17 -Wall -Werror
 
-#CFLAGS += -O2
-CFLAGS += -g -O0
-
 # Build the app you've specified in APPNAME for the "all" or "default" target
-all: dirs $(APPNAME)
+all: dirs debug $(APPNAME)
 
 dirs:
+	@echo $(DEBUG)
+	@echo $(CFLAGS)
 	@mkdir -p $(CORE_ODIR)
 	@mkdir -p $(CONT_ODIR)
 	@mkdir -p $(CORE_DEP_DIR)
 	@mkdir -p $(CONT_DEP_DIR)
 	@mkdir -p $(BDIR)
+
+debug:
+ifeq ($(DEBUG), 0)
+CFLAGS += -O2
+else
+CFLAGS += -g -O0
+endif
 
 # Remove all build intermediates and output file
 clean: ; @rm -rf $(APPNAME) $(CORE_DEP_DIR)/*.d $(CONT_DEP_DIR)/*.d $(CONT_ODIR)/*.o $(CORE_ODIR)/*.o
@@ -87,10 +94,6 @@ $(CORE_ODIR)/%.o: $(CORE_DIR)/%.cpp $(CORE_DEP_DIR)/%.d | $(CORE_DEP_DIR)
 $(CONT_ODIR)/%.o: $(CONT_DIR)/%.cpp $(CONT_DEP_DIR)/%.d | $(CONT_DEP_DIR)
 	@$(CONT_COMPILE.cpp) $(OUTPUT_OPTION) $<
 	@echo Building $@
-
-#$(BDIR): ; @mkdir -p $@
-# Create the DEPDIR when it doesn't exist
-#$(DEPDIR): ; @mkdir -p $@
 
 # Use pattern rules to build a list of DEPFILES
 CORE_DEPFILES := $(CORE_SRCS:$(CORE_DIR)/%.cpp=$(CORE_DEP_DIR)/%.d)
