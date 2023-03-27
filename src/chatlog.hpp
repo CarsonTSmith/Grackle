@@ -23,6 +23,4 @@ namespace chatlog {
     };
 
     extern chatlog_t chatlog; // the global chat log
-
-    void send_history(const int index);
 }

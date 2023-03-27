@@ -9,11 +9,11 @@
 
 using json = nlohmann::json;
 
-static constexpr int SEND_CHAT_MSG = 1;
+static constexpr int CHAT_SEND = 1;
 
 // The value to the "path" key in the body
 static const std::unordered_map<std::string, int> route_table {
-    {"/chat/send", SEND_CHAT_MSG}
+    {"/chat/send", CHAT_SEND}
 };
 
 int request_router::route(const int index)
@@ -29,10 +29,10 @@ int request_router::route(const int index)
     // then get the "path" string
     auto it = route_table.find(j["path"]);
     if (it == route_table.end())
-        return -1; // not found, return generic response
+        return -1; // not found, return path not found response
     
     switch (it->second) {
-    case SEND_CHAT_MSG:
+    case CHAT_SEND:
         printf("called\n");
         // call controller
         break;

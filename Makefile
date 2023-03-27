@@ -2,11 +2,13 @@ DEBUG = 0 # Change to 0 for release version
 
 # See http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
 # for the template used to start this file
-SDIR := src
-ODIR := .objs
-BDIR := bin
+SDIR     := src
+ODIR     := .objs
+BDIR     := bin
 
-INC := -I$(CURDIR)/libs/json/single_include/nlohmann
+JSON_DIR := $(CURDIR)/libs/json/single_include/nlohmann
+
+INC := -I$(JSON_DIR)
 # -- TODO: customize the list below for your project ---
 # List of source .c files used with the project
 SRCS := $(wildcard $(SDIR)/*.cpp)
@@ -23,15 +25,13 @@ OBJFILES := $(SRCS:$(SDIR)/%.cpp=$(ODIR)/%.o)
 # Add all warnings/errors to cflags default.  This is not required but is a best practice
 CFLAGS := -std=c++17 -Wall -Werror
 
-CFLAGS += -O2
-#CFLAGS += -g -O0
+#CFLAGS += -O2
+CFLAGS += -g -O0
 
 # Build the app you've specified in APPNAME for the "all" or "default" target
 all : dirs $(APPNAME)
 
-default : dirs $(APPNAME)
-
-dirs:
+dirs :
 	@mkdir -p $(ODIR)
 	@mkdir -p $(BDIR)
 

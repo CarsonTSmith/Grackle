@@ -86,7 +86,6 @@ static void do_read_body(const int index)
     case BODY_DONE:
         // perform the request
         // then reset the client's buffers
-        //response::send_to_all(index); // send the message to all clients
         request_router::route(index);
         clients.c_clients[index].reset();
         break;

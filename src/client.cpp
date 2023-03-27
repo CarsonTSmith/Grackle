@@ -29,7 +29,7 @@ int client::client_t::body_to_json(json &json)
     }
 
     try {
-        //json = json::parse(&(body[i]));
+        json = json::parse(&(body[i]));
     } catch (std::exception &e) {
         return -1;
     }
