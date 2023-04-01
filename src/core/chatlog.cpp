@@ -20,8 +20,8 @@ void chatlog::chatlog_t::init()
 
     cwd = getcwd(nullptr, 0);
     if (cwd == nullptr) {
-        free(cwd);
-        return;
+        fprintf(stderr, "Log file failed to initialize");
+        exit(1);
     }
 
     sprintf(chatlogdir, "%s/chatlog", cwd);
