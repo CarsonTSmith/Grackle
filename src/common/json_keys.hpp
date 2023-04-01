@@ -2,6 +2,7 @@
 
 #include <string>
 
+// json keys for the requests/responses to standardize them
 namespace json_keys {
 
 const std::string TIMESTAMP = "timestamp";

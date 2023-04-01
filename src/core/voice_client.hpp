@@ -5,11 +5,12 @@
 
 namespace voice_client {
 
-    struct voice_client_t {
-        
-        uint64_t        last_message_time; // milliseconds since epoch
-        struct sockaddr addr;
-    };
+struct voice_client_t {
+    
+    uint64_t        last_message_time; // milliseconds since epoch
+    struct sockaddr addr;
+};
 
-    bool operator==(const voice_client_t &lhs, const voice_client_t &rhs);
+bool operator==(const voice_client_t &lhs, const voice_client_t &rhs);
+
 }

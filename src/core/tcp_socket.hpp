@@ -5,10 +5,10 @@
 
 namespace tcp_socket {
 
-    constexpr int TCP_PORT = 42125;
+constexpr int TCP_PORT = 42125;
 
-    int  start(struct sockaddr_in *addr);
-    void do_accept(const int sockfd, struct sockaddr_in *addr);
-    void do_poll();
+int  start(struct sockaddr_in *addr);
+void do_accept(const int sockfd, struct sockaddr_in *addr);
+void do_poll();
 
 } // END namespace tcp_server

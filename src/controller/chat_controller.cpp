@@ -7,7 +7,8 @@
 #include <json.hpp>
 #include <utils/date_time.hpp>
 
-int controller::chat_send(const int index, json &body)
+// takes the body of the incoming request
+int controller::chat_send(const json &body)
 {
     json response_body;
 
