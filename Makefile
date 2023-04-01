@@ -12,7 +12,7 @@ UTIL_DIR          := $(SDIR)/utils
 
 CORE_ODIR         := $(CORE_DIR)/.objs
 CONT_ODIR         := $(CONT_DIR)/.objs
-COMM_ODIR          := $(COMM_DIR)/.objs
+COMM_ODIR         := $(COMM_DIR)/.objs
 UTIL_ODIR         := $(UTIL_DIR)/.objs
 
 CORE_DEP_DIR      := $(CORE_DIR)/.deps

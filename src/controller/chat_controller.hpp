@@ -6,5 +6,5 @@ using json = nlohmann::json;
 
 namespace controller {
 
-    int chat_send(json &body);
+    int chat_send(const int index, json &body);
 }
