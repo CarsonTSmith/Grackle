@@ -4,7 +4,7 @@
 
 using json = nlohmann::json;
 
-namespace chat_controller {
+namespace controller {
 
     int chat_send(json &body);
 }

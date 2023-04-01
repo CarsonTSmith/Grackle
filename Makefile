@@ -12,8 +12,9 @@ CORE_DEP_DIR      := $(CORE_DIR)/.deps
 CONT_DEP_DIR      := $(CONT_DIR)/.deps
 BDIR              := bin
 
+ROOT_SRC_DIR := $(CURDIR)/src
 JSON_DIR := $(CURDIR)/libs/json/single_include/nlohmann
-INC := -I$(JSON_DIR)
+INC := -I$(ROOT_SRC_DIR) -I$(JSON_DIR)
 # -- TODO: customize the list below for your project ---
 # List of source .c files used with the project
 CORE_SRCS := $(wildcard $(CORE_DIR)/*.cpp)
@@ -36,8 +37,6 @@ CFLAGS := -std=c++17 -Wall -Werror
 all: dirs debug $(APPNAME)
 
 dirs:
-	@echo $(DEBUG)
-	@echo $(CFLAGS)
 	@mkdir -p $(CORE_ODIR)
 	@mkdir -p $(CONT_ODIR)
 	@mkdir -p $(CORE_DEP_DIR)
@@ -46,7 +45,7 @@ dirs:
 
 debug:
 ifeq ($(DEBUG), 0)
-CFLAGS += -O2
+CFLAGS += -O2 -DNDEBUG
 else
 CFLAGS += -g -O0
 endif
