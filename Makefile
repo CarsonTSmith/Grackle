@@ -22,9 +22,11 @@ UTIL_DEP_DIR      := $(UTIL_DIR)/.deps
 
 BDIR              := bin
 
+#Include paths
 ROOT_SRC_DIR := $(CURDIR)/src
 JSON_DIR := $(CURDIR)/libs/json/single_include/nlohmann
 INC := -I$(ROOT_SRC_DIR) -I$(JSON_DIR)
+
 # -- TODO: customize the list below for your project ---
 # List of source .c files used with the project
 CORE_SRCS := $(wildcard $(CORE_DIR)/*.cpp)
