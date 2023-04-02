@@ -1,6 +1,5 @@
 #include "response.hpp"
 
-#include "chatlog.hpp"
 #include "clients.hpp"
 
 #include <mutex>

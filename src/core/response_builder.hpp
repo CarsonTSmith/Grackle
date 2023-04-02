@@ -5,7 +5,7 @@
 
 using json = nlohmann::json;
 
-namespace response {
+namespace response_builder {
 
 std::string build(const json &body);
 

@@ -1,12 +1,8 @@
 #include "chatlog.hpp"
 
-#include "response.hpp"
-
+#include <core/response.hpp>
 #include <fcntl.h>
-#include <fstream>
-#include <mutex>
 #include <stdlib.h>
-#include <string>
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>

@@ -1,6 +1,5 @@
 #include "tcp_socket.hpp"
 
-#include "chatlog.hpp"
 #include "clients.hpp"
 #include "request.hpp"
 

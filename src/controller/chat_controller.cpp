@@ -1,24 +1,14 @@
 #include "chat_controller.hpp"
 
-#include <common/json_keys.hpp>
-#include <core/clients.hpp>
 #include <core/response.hpp>
-#include <core/response_builder.hpp>
-#include <json.hpp>
-#include <utils/date_time.hpp>
+#include <logger/chatlog.hpp>
+#include <service/chat_service.hpp>
 
 // takes the body of the incoming request
 int controller::chat_send(const json &body)
 {
-    json response_body;
-
-    response_body[json_keys::TIMESTAMP] = utils::time_stamp();
-    response_body[json_keys::SERVER]    = json_keys::SERVER;
-    response_body[json_keys::PATH]      = body[json_keys::PATH];
-    response_body[json_keys::MESSAGE]   = body[json_keys::MESSAGE];
-
-    std::string response = response::build(response_body);
+    std::string response = chat_service::chat_send_response(body);
     response::send_to_all(response);
-    // log it in the chatlog
+    chatlog::chatlog.add(response);
     return 0;
 }
