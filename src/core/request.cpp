@@ -17,6 +17,8 @@ constexpr int BODY_DONE         = 0;
 constexpr int BODY_NOT_DONE     = -1;
 constexpr int BODY_READ_ERROR   = -2;
 
+constexpr int CLIENT_CLOSED_CONN = 1;
+
 static uint32_t convert_header_to_num(const char *header)
 {
     char *endptr;
@@ -36,14 +38,14 @@ static int read_header(const int index)
                              clients.c_clients[index].header,
                              client::HEADER_SIZE - clients.c_clients[index].header_bytes_rd);
     if (bytesrd < 0) {
-        if (errno == EAGAIN)
+        if ((errno == EAGAIN) || (errno == EINTR))
             return HEADER_NOT_DONE;
 
         return HEADER_READ_ERROR;
     }
 
     if (bytesrd == 0)
-        return HEADER_READ_ERROR;
+        return CLIENT_CLOSED_CONN;
 
     clients.c_clients[index].header_bytes_rd += bytesrd;
     if (clients.c_clients[index].header_bytes_rd == client::HEADER_SIZE) {
@@ -62,14 +64,14 @@ static int read_body(const int index)
                               clients.c_clients[index].body,
                               clients.c_clients[index].body_length - clients.c_clients[index].body_bytes_rd);
     if (bytesrd < 0) {
-        if (errno == EAGAIN)
+        if ((errno == EAGAIN) || (errno == EINTR))
             return BODY_NOT_DONE; 
 
         return BODY_READ_ERROR;
     }
 
     if (bytesrd == 0)
-        return BODY_READ_ERROR;
+        return CLIENT_CLOSED_CONN;
 
     clients.c_clients[index].body_bytes_rd += bytesrd;
     if (clients.c_clients[index].body_bytes_rd < clients.c_clients[index].body_length)
@@ -92,6 +94,7 @@ static void do_read_body(const int index)
     case BODY_NOT_DONE:
         break; // go back to polling
     case BODY_READ_ERROR:
+    case CLIENT_CLOSED_CONN:
     default:
         clients::reset(index);
         break;
@@ -108,6 +111,7 @@ static void do_read_header(const int index)
     case HEADER_NOT_DONE:
         break; // go back to polling
     case HEADER_READ_ERROR:
+    case CLIENT_CLOSED_CONN:
     default:
         clients::reset(index);
         break;

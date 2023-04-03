@@ -7,7 +7,7 @@
 std::string response_builder::build(const json &body)
 {
     std::string bytes = std::to_string(body.dump().size());
-    std::string ret(client::HEADER_SIZE - bytes.size(), 0); // TODO: need to check if size is too big
+    std::string ret(client::HEADER_SIZE - bytes.size(), '0'); // TODO: need to check if size is too big
     ret += bytes;
     ret += body.dump();
     return ret;

@@ -88,8 +88,20 @@ CFLAGS += -g -O0
 endif
 
 # Remove all build intermediates and output file
-clean: ; @rm -rf $(APPNAME) $(CORE_DEP_DIR)/*.d $(CONT_DEP_DIR)/*.d $(COMM_DEP_DIR)/*d $(UTIL_DEP_DIR)/*.d $(SERV_DEP_DIR)/*.d $(LOGG_DEP_DIR)/*.d \
-	 $(CONT_ODIR)/*.o $(CORE_ODIR)/*.o $(COMM_ODIR)/*.o $(UTIL_ODIR)/*.o $(SERV_ODIR)/*.o $(LOGG_ODIR)/*.o
+clean: ; @rm -rf $(APPNAME) \
+	$(CORE_DEP_DIR)/*.d \
+	$(CONT_DEP_DIR)/*.d \
+	$(COMM_DEP_DIR)/*.d \
+	$(UTIL_DEP_DIR)/*.d \
+	$(SERV_DEP_DIR)/*.d \
+	$(LOGG_DEP_DIR)/*.d \
+	\
+	$(CONT_ODIR)/*.o \
+	$(CORE_ODIR)/*.o \
+	$(COMM_ODIR)/*.o \
+	$(UTIL_ODIR)/*.o \
+	$(SERV_ODIR)/*.o \
+	$(LOGG_ODIR)/*.o
 
 # Build the application by running the link step with all objfile inputs
 $(APPNAME): $(CORE_OBJFILES) $(CONT_OBJFILES) $(COMM_OBJFILES) $(UTIL_OBJFILES) $(SERV_OBJFILES) $(LOGG_OBJFILES)
