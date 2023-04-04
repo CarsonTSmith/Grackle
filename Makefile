@@ -101,7 +101,9 @@ clean: ; @rm -rf $(APPNAME) \
 	$(COMM_ODIR)/*.o \
 	$(UTIL_ODIR)/*.o \
 	$(SERV_ODIR)/*.o \
-	$(LOGG_ODIR)/*.o
+	$(LOGG_ODIR)/*.o \
+
+	@echo Grackle cleaned
 
 # Build the application by running the link step with all objfile inputs
 $(APPNAME): $(CORE_OBJFILES) $(CONT_OBJFILES) $(COMM_OBJFILES) $(UTIL_OBJFILES) $(SERV_OBJFILES) $(LOGG_OBJFILES)

@@ -13,6 +13,7 @@ std::string chat_service::chat_send_response(const json &body)
     response_body[json_keys::SERVER]    = json_keys::GRACKLE;
     response_body[json_keys::PATH]      = body[json_keys::PATH];
     response_body[json_keys::MESSAGE]   = body[json_keys::MESSAGE];
+    response_body[json_keys::USERNAME]  = body[json_keys::USERNAME];
 
     std::string response = response_builder::build(response_body);
     return response;
