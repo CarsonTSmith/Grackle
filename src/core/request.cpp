@@ -35,7 +35,7 @@ static int read_header(const int index)
 {
     auto &clients = clients::clients_s::get_instance();
     const int bytesrd = read(clients.p_clients[index].fd,
-                             clients.c_clients[index].header,
+                             clients.c_clients[index].header + clients.c_clients[index].header_bytes_rd,
                              client::HEADER_SIZE - clients.c_clients[index].header_bytes_rd);
     if (bytesrd < 0) {
         if ((errno == EAGAIN) || (errno == EINTR))
@@ -61,7 +61,7 @@ static int read_body(const int index)
 {
     auto &clients = clients::clients_s::get_instance();
     const auto bytesrd = read(clients.p_clients[index].fd,
-                              clients.c_clients[index].body,
+                              clients.c_clients[index].body + clients.c_clients[index].body_bytes_rd,
                               clients.c_clients[index].body_length - clients.c_clients[index].body_bytes_rd);
     if (bytesrd < 0) {
         if ((errno == EAGAIN) || (errno == EINTR))
