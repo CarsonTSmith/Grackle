@@ -18,6 +18,7 @@ static void process(clients::clients_s &clients, int num_fds) {
         if (clients.p_clients[i].revents & POLLIN) {
             // TODO: delegate handle_request to threadpool in the future
             // for now spin off a thread
+            clients.p_clients[i].revents = 0;
             std::thread handle_request_thread(request::handle_request, i);
             handle_request_thread.detach();
             num_fds--;

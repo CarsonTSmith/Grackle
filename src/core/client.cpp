@@ -3,12 +3,6 @@
 #include <exception>
 #include <json.hpp>
 
-client::client_t::client_t()
-{
-    memset(header, 0, sizeof(header));
-    memset(body, 0, sizeof(body));
-}
-
 void client::client_t::reset()
 {
     memset(header, 0, sizeof(header));
