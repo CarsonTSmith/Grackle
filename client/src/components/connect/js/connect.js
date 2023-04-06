@@ -10,7 +10,6 @@
         var check = true;
         for (var i = 0; i < input.length; i++) {
             if (validate(input[i]) == false) {
-                console.log('failed');
                 showValidate(input[i]);
                 check=false;
             }
@@ -51,7 +50,7 @@
                 return false;
             }
         } else if ($(input).attr('type') == 'username' || $(input).attr('name') == 'username') {
-            if ((input.length > 20) || (input.length < 3)) {
+            if (($(input).val().length > 20) || ($(input).val().length < 3)) {
                 console.log('username failed');
                 return false;
             }
