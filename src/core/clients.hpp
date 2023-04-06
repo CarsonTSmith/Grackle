@@ -14,7 +14,7 @@ const int MAX_CLIENTS = 64;
 struct clients_s {
     
     public:
-        std::atomic<int> number_of_clients;
+        std::atomic<int> number_of_clients = {0};
         pollfd           p_clients[MAX_CLIENTS];
         client::client_t c_clients[MAX_CLIENTS];
 
