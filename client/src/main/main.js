@@ -2,8 +2,7 @@ const {app, BrowserWindow, ipcMain} = require('electron');
 const path = require('path');
 const net  = require('net');
 
-let connect_win;
-let main_win;
+let win;
 
 let client;
 
@@ -13,9 +12,9 @@ let client;
 const create_connect_win = () => {
   const connect_win_width  = 0.5 * 1920;
   const conenct_win_height = 0.7 * 1080;
-  connect_win = new BrowserWindow({
+  win = new BrowserWindow({
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname + '/preloads/', 'connect_preload.js')
     },
     width: connect_win_width,
     height: conenct_win_height,
@@ -27,54 +26,34 @@ const create_connect_win = () => {
     connect_to_server(socket_info.ip, socket_info.port);
   });
 
-  connect_win.loadFile('src/components/connect/index.html')
+  win.loadFile('src/components/connect/index.html');
 }
 
 app.whenReady().then(() => {
   create_connect_win();
 
-    app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0)
-         create_connect_win()
-    });
+  app.on('activate', () => {
+      if (BrowserWindow.getAllWindows().length === 0)
+        create_connect_win()
+  });
 
 })
 
-function connect_to_server(ip, port)
-{
-  if (connected_to_server(ip, port) === false) {
-    return;
-  }
-
-  main_win = new BrowserWindow({
-    webPreferences: {
-      nodeIntegration: true
-    },
-    width: dimensions.width,
-    height: dimensions.height,
-    //autoHideMenuBar: true,
-  });
-
-  main_win.loadFile('src/components/connect/test.html');
-}
-
-function connected_to_server(ip, port) 
+function connect_to_server(ip, port) 
 {
   client = new net.Socket();
   client.connect(port, ip);
 
   client.on('error',function(e) {
     console.log('cant connect to server');
-    return false;
   });
 
-  client.on('ready',function() {
+  client.on('connect',function() {
     client.write('00000000');
-    return true;
+    win.setSize(1920, 1080);
+    win.loadFile('src/components/connect/test.html');
   });
 
   client.on('data', function() {
   });
-
-  return false;
 }

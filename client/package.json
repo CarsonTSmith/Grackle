@@ -2,7 +2,7 @@
   "name": "Grackle",
   "version": "1.0.0",
   "description": "Grackle client",
-  "main": "main.js",
+  "main": "src/main/main.js",
   "author": "Carson Smith",
   "license": "ISC",
   "devDependencies": {
