@@ -40,7 +40,7 @@ deploy () {
 
 echo Deploying Grackle build
 
-deploy()
+deploy
 
 echo Grackle deployed successfully
 
