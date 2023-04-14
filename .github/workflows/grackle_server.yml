@@ -14,6 +14,7 @@ jobs:
       - name: checkout repo
         uses: actions/checkout@v2
       - name: run makefile
+        shell: bash
         run: |
           cd server
           make all
