@@ -13,11 +13,8 @@ jobs:
     steps:
       - name: checkout repo
         uses: actions/checkout@v2
-      - name: build script
-        shell: bash
-        run: |
-         chmod +x ./server/build.sh
-         ./server/build.sh
+      - name: run makefile
+        run: make all
   deploy:
     name: deploy
     runs-on: ubuntu-22.04
