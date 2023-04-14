@@ -1,0 +1,17 @@
+name: Grackle Server Scheduled Test Deployment
+run-name: Grackle Server Scheduled Test Deployment
+on:
+  schedule:
+  - cron: 0/10 * * * *
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v2
+      - name: build application
+        shell: bash
+        run: ./server/build.sh
+      - name: deploy application
+        run: ./server/deploy.sh
