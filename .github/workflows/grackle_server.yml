@@ -6,12 +6,22 @@ on:
   
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: build
+    runs-on: ubuntu-22.04
     steps:
       - name: checkout repo
         uses: actions/checkout@v2
-      - name: build application
+      - name: build script
         shell: bash
         run: ./server/build.sh
-      - name: deploy application
-        run: ./server/deploy.sh
+  deploy:
+    name: deploy
+    runs-on: ubuntu-22.04
+    needs: build
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v2
+      - name: build script
+        shell: bash
+        run: ./server/build.sh
+    
