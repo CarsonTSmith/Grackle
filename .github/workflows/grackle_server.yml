@@ -5,6 +5,10 @@ on:
     inputs:
       logLevel:
         description: 'Log level'
+        
+defaults:
+  run:
+    working-directory: ./server
   
 jobs:
   build:
@@ -15,9 +19,7 @@ jobs:
         uses: actions/checkout@v2
       - name: run makefile
         shell: bash
-        run: |
-          cd server
-          make all
+        run: make all
   deploy:
     name: deploy
     runs-on: ubuntu-22.04
