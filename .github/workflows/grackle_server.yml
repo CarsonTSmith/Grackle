@@ -1,8 +1,7 @@
 name: Grackle Server Scheduled Daily Deployment
 run-name: Grackle Server Scheduled Daily Deployment
 on:
-  schedule:
-  - cron: 0  3 * * *
+  workflow-dispatch:
   
 jobs:
   build:
