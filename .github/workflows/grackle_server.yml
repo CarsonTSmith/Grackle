@@ -1,7 +1,10 @@
 name: Grackle Server Scheduled Daily Deployment
 run-name: Grackle Server Scheduled Daily Deployment
 on:
-  workflow-dispatch:
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
   
 jobs:
   build:
