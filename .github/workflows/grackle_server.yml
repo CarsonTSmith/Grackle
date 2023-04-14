@@ -16,7 +16,7 @@ jobs:
       - name: run makefile
         shell: bash
         run: |
-          pwd
+          cd server
           make all
   deploy:
     name: deploy
