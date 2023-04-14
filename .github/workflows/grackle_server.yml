@@ -14,7 +14,6 @@ jobs:
       - name: checkout repo
         uses: actions/checkout@v2
       - name: run makefile
-        working-directory: /home/runner/work/Grackle/server
         shell: bash
         run: |
           pwd
