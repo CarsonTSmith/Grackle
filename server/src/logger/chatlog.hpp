@@ -6,7 +6,7 @@
 
 namespace chatlog {
 
-const std::string chatlog_delim = "!!:\n\n";
+static const std::string chatlog_delim = "!!:\n\n";
 
 struct chatlog_t {
     std::fstream chatlog;
