@@ -11,6 +11,7 @@ COMM_DIR          := $(SDIR)/common
 UTIL_DIR          := $(SDIR)/utils
 SERV_DIR          := $(SDIR)/service
 LOGG_DIR          := $(SDIR)/logger
+JSON_DIR          := libs/json
 
 CORE_ODIR         := $(CORE_DIR)/.objs
 CONT_ODIR         := $(CONT_DIR)/.objs
@@ -18,6 +19,7 @@ COMM_ODIR         := $(COMM_DIR)/.objs
 UTIL_ODIR         := $(UTIL_DIR)/.objs
 SERV_ODIR         := $(SERV_DIR)/.objs
 LOGG_ODIR         := $(LOGG_DIR)/.objs
+JSON_ODIR         := $(JSON_DIR)/.objs
 
 CORE_DEP_DIR      := $(CORE_DIR)/.deps
 CONT_DEP_DIR      := $(CONT_DIR)/.deps
@@ -26,12 +28,20 @@ UTIL_DEP_DIR      := $(UTIL_DIR)/.deps
 SERV_DEP_DIR      := $(SERV_DIR)/.deps
 LOGG_DEP_DIR      := $(LOGG_DIR)/.deps
 
+JSON_SHARED_LIB  := $(JSON_DIR)/.shared_lib
+
 BDIR              := bin
 
 #Include paths
-ROOT_SRC_DIR := $(CURDIR)/src
-JSON_DIR := $(CURDIR)/libs/json/single_include/nlohmann
-INC := -I$(ROOT_SRC_DIR) -I$(JSON_DIR)
+N_JSON_DIR    := libs/json/single_include/nlohmann
+
+INC           := -I$(SDIR) -I$(N_JSON_DIR) -I$(JSON_DIR)
+
+#Link paths
+SHARED_LIB_PATHS := -L$(JSON_SHARED_LIB)
+
+# Shared libs for linking
+SHARED_LIBS := -lsimdjson
 
 # -- TODO: customize the list below for your project ---
 # List of source .c files used with the project
@@ -58,7 +68,8 @@ SERV_OBJFILES := $(SERV_SRCS:$(SERV_DIR)/%.cpp=$(SERV_ODIR)/%.o)
 LOGG_OBJFILES := $(LOGG_SRCS:$(LOGG_DIR)/%.cpp=$(LOGG_ODIR)/%.o)
 
 # Add all warnings/errors to cflags default.  This is not required but is a best practice
-CFLAGS := -std=c++17 -Wall -Werror
+CFLAGS            := -std=c++17 -Wall -Werror
+SHARED_LIB_CFLAGS := -std=c++17 -O2 -fPIC
 
 # Build the app you've specified in APPNAME for the "all" or "default" target
 all: dirs debug $(APPNAME)
@@ -70,6 +81,7 @@ dirs:
 	@mkdir -p $(UTIL_ODIR)
 	@mkdir -p $(SERV_ODIR)
 	@mkdir -p $(LOGG_ODIR)
+	@mkdir -p $(JSON_ODIR)
 	
 	@mkdir -p $(CORE_DEP_DIR)
 	@mkdir -p $(CONT_DEP_DIR)
@@ -77,6 +89,8 @@ dirs:
 	@mkdir -p $(UTIL_DEP_DIR)
 	@mkdir -p $(SERV_DEP_DIR)
 	@mkdir -p $(LOGG_DEP_DIR)
+
+	@mkdir -p $(JSON_SHARED_LIB)
 
 	@mkdir -p $(BDIR)
 
@@ -86,6 +100,23 @@ CFLAGS += -O2 -DNDEBUG
 else
 CFLAGS += -g -O0
 endif
+
+cleannshared: ; @rm -rf $(APPNAME) \
+	$(CORE_DEP_DIR)/*.d \
+	$(CONT_DEP_DIR)/*.d \
+	$(COMM_DEP_DIR)/*.d \
+	$(UTIL_DEP_DIR)/*.d \
+	$(SERV_DEP_DIR)/*.d \
+	$(LOGG_DEP_DIR)/*.d \
+	\
+	$(CONT_ODIR)/*.o \
+	$(CORE_ODIR)/*.o \
+	$(COMM_ODIR)/*.o \
+	$(UTIL_ODIR)/*.o \
+	$(SERV_ODIR)/*.o \
+	$(LOGG_ODIR)/*.o \
+
+	@echo Grackle cleaned except for shared libs and shared objects
 
 # Remove all build intermediates and output file
 clean: ; @rm -rf $(APPNAME) \
@@ -102,13 +133,22 @@ clean: ; @rm -rf $(APPNAME) \
 	$(UTIL_ODIR)/*.o \
 	$(SERV_ODIR)/*.o \
 	$(LOGG_ODIR)/*.o \
+	$(JSON_ODIR)/*.o \
+	\
+	$(JSON_SHARED_LIB)/*.so
 
 	@echo Grackle cleaned
 
 # Build the application by running the link step with all objfile inputs
-$(APPNAME): $(CORE_OBJFILES) $(CONT_OBJFILES) $(COMM_OBJFILES) $(UTIL_OBJFILES) $(SERV_OBJFILES) $(LOGG_OBJFILES)
+$(APPNAME): $(JSON_SHARED_LIB)/libsimdjson.so \
+			$(CORE_OBJFILES) \
+			$(CONT_OBJFILES) \
+			$(COMM_OBJFILES) \
+			$(UTIL_OBJFILES) \
+			$(SERV_OBJFILES) \
+			$(LOGG_OBJFILES)
 	@echo Linking Grackle
-	@$(CXX) $(LDFLAGS) $^ -o $(APPNAME)
+	@$(CXX) $(LDFLAGS) $(SHARED_LIB_PATHS) $(SHARED_LIBS) $^ -o $(APPNAME)
 	@echo Grackle built successfully
 
 # The below content is from  http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
@@ -147,28 +187,38 @@ LOGG_COMPILE.cpp = $(CXX) $(LOGG_DEP_FLAGS) $(CFLAGS) $(CPPFLAGS) $(INC) -c
 # the targets won't get rebuilt when the timestamp on DEPDIR changes
 # See https://www.gnu.org/software/make/manual/html_node/Prerequisite-Types.html for order only prerequesites overview.
 $(CORE_ODIR)/%.o: $(CORE_DIR)/%.cpp $(CORE_DEP_DIR)/%.d | $(CORE_DEP_DIR)
-	@$(CORE_COMPILE.cpp) $(OUTPUT_OPTION) $<
 	@echo Building $@
+	@$(CORE_COMPILE.cpp) $(OUTPUT_OPTION) $<
 
 $(CONT_ODIR)/%.o: $(CONT_DIR)/%.cpp $(CONT_DEP_DIR)/%.d | $(CONT_DEP_DIR)
-	@$(CONT_COMPILE.cpp) $(OUTPUT_OPTION) $<
 	@echo Building $@
+	@$(CONT_COMPILE.cpp) $(OUTPUT_OPTION) $<
 
 $(COMM_ODIR)/%.o: $(COMM_DIR)/%.cpp $(COMM_DEP_DIR)/%.d | $(COMM_DEP_DIR)
-	@$(COMM_COMPILE.cpp) $(OUTPUT_OPTION) $<
 	@echo Building $@
+	@$(COMM_COMPILE.cpp) $(OUTPUT_OPTION) $<
 
 $(UTIL_ODIR)/%.o: $(UTIL_DIR)/%.cpp $(UTIL_DEP_DIR)/%.d | $(UTIL_DEP_DIR)
-	@$(UTIL_COMPILE.cpp) $(OUTPUT_OPTION) $<
 	@echo Building $@
+	@$(UTIL_COMPILE.cpp) $(OUTPUT_OPTION) $<
 
 $(SERV_ODIR)/%.o: $(SERV_DIR)/%.cpp $(SERV_DEP_DIR)/%.d | $(SERV_DEP_DIR)
-	@$(SERV_COMPILE.cpp) $(OUTPUT_OPTION) $<
 	@echo Building $@
+	@$(SERV_COMPILE.cpp) $(OUTPUT_OPTION) $<
 
 $(LOGG_ODIR)/%.o: $(LOGG_DIR)/%.cpp $(LOGG_DEP_DIR)/%.d | $(LOGG_DEP_DIR)
-	@$(LOGG_COMPILE.cpp) $(OUTPUT_OPTION) $<
 	@echo Building $@
+	@$(LOGG_COMPILE.cpp) $(OUTPUT_OPTION) $<
+
+# Shared Library Rules
+$(JSON_SHARED_LIB)/libsimdjson.so: $(JSON_ODIR)/simdjson.o
+	@echo Creating $@
+	@$(CXX) -shared -o $@ $<
+
+# Shared Library Objects
+$(JSON_ODIR)/simdjson.o: $(JSON_DIR)/simdjson.cpp $(JSON_DIR)/simdjson.h
+	@echo Building $@
+	@$(CXX) $(SHARED_LIB_CFLAGS) -c $(OUTPUT_OPTION) $<
 
 # Use pattern rules to build a list of DEPFILES
 CORE_DEPFILES := $(CORE_SRCS:$(CORE_DIR)/%.cpp=$(CORE_DEP_DIR)/%.d)
