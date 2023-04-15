@@ -32,7 +32,7 @@ void response::send(const int index, const std::string &msg)
     auto &clients = clients::clients_s::get_instance();
     std::lock_guard<std::mutex> lk(response::write_mutex);
     while (total < msg.size()) {
-        result = write(clients.p_clients[index].fd, msg.c_str(), msg.size());
+        result = write(clients.p_clients[index].fd, msg.c_str() + total, msg.size() - total);
         if (result > 0) {
             total += result;
         } else if (result == 0) {
