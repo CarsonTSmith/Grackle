@@ -2,5 +2,6 @@
 
 namespace request_router {
 
-    int route(const int index);
+int route(const int index);
+
 }
