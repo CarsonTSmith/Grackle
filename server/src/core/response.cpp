@@ -36,6 +36,9 @@ void response::send(const int index, const std::string &msg)
         } else if (result == 0) {
             if ((errno == EAGAIN) || (errno == EWOULDBLOCK))
                 return;
+
+            if (errno == EINTR)
+                continue;
                 
             clients::reset(index);
             return;
