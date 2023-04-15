@@ -1,5 +1,5 @@
 # Change to 0 for release version
-DEBUG := 1
+DEBUG := 0
 
 # See http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
 # for the template used to start this file
