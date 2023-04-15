@@ -22,7 +22,8 @@ struct client_t {
     uint32_t   body_length         = 0;
     uint32_t   header_bytes_rd     = 0;
     uint32_t   body_bytes_rd       = 0;
-    std::mutex mutex;
+    std::mutex read_mutex;
+    std::mutex write_mutex;
     
     client_t() {}
 

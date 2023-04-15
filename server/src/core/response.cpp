@@ -6,8 +6,6 @@
 #include <string>
 #include <unistd.h>
 
-std::mutex response::write_mutex;
-
 // sends the msg to all connected tcp clients
 void response::send_to_all(const std::string &msg)
 {
@@ -30,7 +28,7 @@ void response::send(const int index, const std::string &msg)
         return;
 
     auto &clients = clients::clients_s::get_instance();
-    std::lock_guard<std::mutex> lk(response::write_mutex);
+    std::lock_guard<std::mutex> lk(clients.c_clients[index].write_mutex);
     while (total < msg.size()) {
         result = write(clients.p_clients[index].fd, msg.c_str() + total, msg.size() - total);
         if (result > 0) {
