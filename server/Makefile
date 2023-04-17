@@ -28,9 +28,9 @@ UTIL_DEP_DIR      := $(UTIL_DIR)/.deps
 SERV_DEP_DIR      := $(SERV_DIR)/.deps
 LOGG_DEP_DIR      := $(LOGG_DIR)/.deps
 
-JSON_SHARED_LIB  := $(JSON_DIR)/.shared_lib
-
 BDIR              := bin
+
+SHARED_LIBS_DIR  := $(BDIR)/libs
 
 #Include paths
 N_JSON_DIR    := libs/json/single_include/nlohmann
@@ -38,10 +38,12 @@ N_JSON_DIR    := libs/json/single_include/nlohmann
 INC           := -I$(SDIR) -I$(N_JSON_DIR) -I$(JSON_DIR)
 
 #Link paths
-SHARED_LIB_PATHS := -L$(JSON_SHARED_LIB)
+SHARED_LIB_PATHS := -L$(SHARED_LIBS_DIR)
 
 # Shared libs for linking
 SHARED_LIBS := -lsimdjson
+
+LDFLAGS := -Wl,-soname,libsimdjson.so
 
 # -- TODO: customize the list below for your project ---
 # List of source .c files used with the project
@@ -90,9 +92,9 @@ dirs:
 	@mkdir -p $(SERV_DEP_DIR)
 	@mkdir -p $(LOGG_DEP_DIR)
 
-	@mkdir -p $(JSON_SHARED_LIB)
-
 	@mkdir -p $(BDIR)
+
+	@mkdir -p $(SHARED_LIBS_DIR)
 
 debug:
 ifeq ($(DEBUG), 0)
@@ -135,12 +137,12 @@ clean: ; @rm -rf $(APPNAME) \
 	$(LOGG_ODIR)/*.o \
 	$(JSON_ODIR)/*.o \
 	\
-	$(JSON_SHARED_LIB)/*.so
+	$(SHARED_LIBS_DIR)/*.so
 
 	@echo Grackle cleaned
 
 # Build the application by running the link step with all objfile inputs
-$(APPNAME): $(JSON_SHARED_LIB)/libsimdjson.so \
+$(APPNAME): $(SHARED_LIBS_DIR)/libsimdjson.so \
 			$(CORE_OBJFILES) \
 			$(CONT_OBJFILES) \
 			$(COMM_OBJFILES) \
@@ -148,7 +150,7 @@ $(APPNAME): $(JSON_SHARED_LIB)/libsimdjson.so \
 			$(SERV_OBJFILES) \
 			$(LOGG_OBJFILES)
 	@echo Linking Grackle
-	@$(CXX) $(LDFLAGS) $(SHARED_LIB_PATHS) $(SHARED_LIBS) $^ -o $(APPNAME)
+	@$(CXX) $(SHARED_LIB_PATHS) $(LDFLAGS) $(SHARED_LIBS) $^ -o $(APPNAME)
 	@echo Grackle built successfully
 
 # The below content is from  http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
@@ -211,7 +213,7 @@ $(LOGG_ODIR)/%.o: $(LOGG_DIR)/%.cpp $(LOGG_DEP_DIR)/%.d | $(LOGG_DEP_DIR)
 	@$(LOGG_COMPILE.cpp) $(OUTPUT_OPTION) $<
 
 # Shared Library Rules
-$(JSON_SHARED_LIB)/libsimdjson.so: $(JSON_ODIR)/simdjson.o
+$(SHARED_LIBS_DIR)/libsimdjson.so: $(JSON_ODIR)/simdjson.o
 	@echo Creating $@
 	@$(CXX) -shared -o $@ $<
 
