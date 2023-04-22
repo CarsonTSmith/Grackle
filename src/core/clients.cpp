@@ -1,10 +1,6 @@
 #include "clients.hpp"
 
-#include "client.hpp"
-
-#include <poll.h>
 #include <unistd.h>
-#include <vector>
 
 clients::clients_s::clients_s()
 {

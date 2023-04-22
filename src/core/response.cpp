@@ -48,3 +48,32 @@ void response::send(const int index, const std::string &msg)
         }
     }
 }
+
+void response::send(const int index, const char *msg, const size_t len)
+{
+    size_t result = 0, total = 0;
+
+    if (len == 0)
+        return;
+
+    auto &clients = clients::clients_s::get_instance();
+    std::lock_guard<std::mutex> lk(clients.c_clients[index].write_mutex);
+    while (total < len) {
+        result = write(clients.p_clients[index].fd, msg + total, len - total);
+        if (result > 0) {
+            total += result;
+        } else if (result == 0) {
+            if ((errno == EAGAIN) || (errno == EWOULDBLOCK))
+                return;
+
+            if (errno == EINTR)
+                continue;
+                
+            clients::reset(index);
+            return;
+        } else if (result < 0) {
+            clients::reset(index);
+            return;
+        }
+    }
+}

@@ -3,17 +3,20 @@
 #include "clients.hpp"
 
 #include <controller/chat_controller.hpp>
-#include <json.hpp>
+#include <controller/echo_controller.hpp>
+#include <nlohmann/json.hpp>
 #include <string>
 #include <unordered_map>
 
 using json = nlohmann::json;
 
 static constexpr int CHAT_SEND = 1;
+static constexpr int ECHO      = 2;
 
 // The value to the "path" key in the body
 static const std::unordered_map<std::string, int> route_table {
-    {"/chat/send", CHAT_SEND}
+    {"/chat/send", CHAT_SEND},
+    {"/echo" , ECHO}
 };
 
 int request_router::route(const int index)
@@ -34,6 +37,9 @@ int request_router::route(const int index)
     switch (it->second) {
     case CHAT_SEND:
         controller::chat_send(body);
+        break;
+    case ECHO:
+        controller::echo_one(index, body);
         break;
     default:
         // error response

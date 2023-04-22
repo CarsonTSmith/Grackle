@@ -2,6 +2,7 @@
 
 #include "clients.hpp"
 #include "request.hpp"
+#include "threadpool.hpp"
 
 #include <errno.h>
 #include <fcntl.h>
@@ -13,14 +14,12 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-static void process(clients::clients_s &clients, int num_fds) {
+static void process(clients::clients_s &clients, int num_fds) 
+{
     for (int i = 0; (num_fds > 0) && (i < clients::MAX_CLIENTS); ++i) {
         if (clients.p_clients[i].revents & POLLIN) {
-            // TODO: delegate handle_request to threadpool in the future
-            // for now spin off a thread
             clients.p_clients[i].revents = 0;
-            std::thread handle_request_thread(request::handle_request, i);
-            handle_request_thread.detach();
+            threadpool::threadpool.push(request::handle_request, i);
             num_fds--;
         }
     }
@@ -78,10 +77,6 @@ void tcp_socket::do_accept(const int sockfd, struct sockaddr_in *addr)
         if (index < 0) {
             close(clientfd);
         }
-        //else {
-        //    std::thread send_history_thread(chatlog::send_history, index);
-        //    send_history_thread.detach();
-        //}
     }
 }
 
@@ -93,7 +88,7 @@ void tcp_socket::do_poll()
     while (1) {
 		num_fds = poll(clients.p_clients,
                        clients::MAX_CLIENTS,
-                       500); // timeout so when new clients connect they are polled
+                       50); // timeout so when new clients connect they are polled
 		if (num_fds > 0) {
 			process(clients, num_fds);
 		} else if (num_fds < 0) { // poll error

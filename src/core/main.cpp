@@ -9,12 +9,18 @@
 #include <signal.h>
 #include <thread>
 
+static void grackle_exit(int signum)
+{
+    exit(-1);
+}
+
 int main(int argc, char *argv[])
 {
     int tcp_sockfd;//, udp_sockfd;
     struct sockaddr_in addr;
 
     signal(SIGPIPE, SIG_IGN);
+    signal(SIGINT, grackle_exit);
     clients::init();
     tcp_sockfd = tcp_socket::start(&addr);
  //   udp_sockfd = udp_socket::start();

@@ -1,5 +1,6 @@
 # Change to 0 for release version
-DEBUG := 0
+DEBUG   := 0
+PROFILE := 0
 
 # See http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
 # for the template used to start this file
@@ -33,7 +34,7 @@ BDIR              := bin
 SHARED_LIBS_DIR  := $(BDIR)/libs
 
 #Include paths
-N_JSON_DIR    := libs/json/single_include/nlohmann
+N_JSON_DIR    := include
 
 INC           := -I$(SDIR) -I$(N_JSON_DIR) -I$(JSON_DIR)
 
@@ -74,7 +75,7 @@ CFLAGS            := -std=c++17 -Wall -Werror
 SHARED_LIB_CFLAGS := -std=c++17 -O2 -fPIC
 
 # Build the app you've specified in APPNAME for the "all" or "default" target
-all: dirs debug $(APPNAME)
+all: dirs debug profile $(APPNAME)
 
 dirs:
 	@mkdir -p $(CORE_ODIR)
@@ -101,6 +102,12 @@ ifeq ($(DEBUG), 0)
 CFLAGS += -O2 -DNDEBUG
 else
 CFLAGS += -g -O0
+endif
+
+profile:
+ifeq ($(PROFILE), 1)
+CFLAGS  += -pg
+LDFLAGS += -pg
 endif
 
 cleannshared: ; @rm -rf $(APPNAME) \

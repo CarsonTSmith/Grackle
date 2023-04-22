@@ -1,7 +1,7 @@
 #include "client.hpp"
 
 #include <exception>
-#include <json.hpp>
+#include <nlohmann/json.hpp>
 
 void client::client_t::reset()
 {
