@@ -5,6 +5,6 @@
 namespace threadpool {
 
 // global thread worker pool
-extern ctpl::thread_pool threadpool;
+extern ctpl::thread_pool g_threadpool;
 
 }

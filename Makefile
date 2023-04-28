@@ -196,38 +196,38 @@ LOGG_COMPILE.cpp = $(CXX) $(LOGG_DEP_FLAGS) $(CFLAGS) $(CPPFLAGS) $(INC) -c
 # the targets won't get rebuilt when the timestamp on DEPDIR changes
 # See https://www.gnu.org/software/make/manual/html_node/Prerequisite-Types.html for order only prerequesites overview.
 $(CORE_ODIR)/%.o: $(CORE_DIR)/%.cpp $(CORE_DEP_DIR)/%.d | $(CORE_DEP_DIR)
-	@echo Building $@
 	@$(CORE_COMPILE.cpp) $(OUTPUT_OPTION) $<
+	@echo Built $@
 
 $(CONT_ODIR)/%.o: $(CONT_DIR)/%.cpp $(CONT_DEP_DIR)/%.d | $(CONT_DEP_DIR)
-	@echo Building $@
 	@$(CONT_COMPILE.cpp) $(OUTPUT_OPTION) $<
+	@echo Built $@
 
 $(COMM_ODIR)/%.o: $(COMM_DIR)/%.cpp $(COMM_DEP_DIR)/%.d | $(COMM_DEP_DIR)
-	@echo Building $@
 	@$(COMM_COMPILE.cpp) $(OUTPUT_OPTION) $<
+	@echo Built $@
 
 $(UTIL_ODIR)/%.o: $(UTIL_DIR)/%.cpp $(UTIL_DEP_DIR)/%.d | $(UTIL_DEP_DIR)
-	@echo Building $@
 	@$(UTIL_COMPILE.cpp) $(OUTPUT_OPTION) $<
+	@echo Built $@
 
 $(SERV_ODIR)/%.o: $(SERV_DIR)/%.cpp $(SERV_DEP_DIR)/%.d | $(SERV_DEP_DIR)
-	@echo Building $@
 	@$(SERV_COMPILE.cpp) $(OUTPUT_OPTION) $<
+	@echo Built $@
 
 $(LOGG_ODIR)/%.o: $(LOGG_DIR)/%.cpp $(LOGG_DEP_DIR)/%.d | $(LOGG_DEP_DIR)
-	@echo Building $@
 	@$(LOGG_COMPILE.cpp) $(OUTPUT_OPTION) $<
+	@echo Built $@
 
 # Shared Library Rules
 $(SHARED_LIBS_DIR)/libsimdjson.so: $(JSON_ODIR)/simdjson.o
-	@echo Creating $@
 	@$(CXX) -shared -o $@ $<
+	@echo Built $@
 
 # Shared Library Objects
 $(JSON_ODIR)/simdjson.o: $(JSON_DIR)/simdjson.cpp $(JSON_DIR)/simdjson.h
-	@echo Building $@
 	@$(CXX) $(SHARED_LIB_CFLAGS) -c $(OUTPUT_OPTION) $<
+	@echo Built $@
 
 # Use pattern rules to build a list of DEPFILES
 CORE_DEPFILES := $(CORE_SRCS:$(CORE_DIR)/%.cpp=$(CORE_DEP_DIR)/%.d)

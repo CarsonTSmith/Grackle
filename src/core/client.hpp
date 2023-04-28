@@ -14,7 +14,7 @@ constexpr int BODY_SIZE   = 8192;
 constexpr int HEADER_SIZE = 8;
 
 // anytime a client makes a change to an instance variable
-// the mutex needs to be locked
+// the read mutex needs to be locked
 struct client_t {
     char              header[HEADER_SIZE] = {0};
     char              body[BODY_SIZE]     = {0};
@@ -24,7 +24,6 @@ struct client_t {
     uint32_t          body_bytes_rd       = 0;
     std::mutex        read_mutex;
     std::mutex        write_mutex;
-    //std::atomic<bool> is_processing;
 
     void reset();
     int  body_to_json(json &json);

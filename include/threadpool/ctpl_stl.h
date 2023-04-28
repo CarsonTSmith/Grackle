@@ -20,6 +20,8 @@
 #ifndef __ctpl_stl_thread_pool_H__
 #define __ctpl_stl_thread_pool_H__
 
+#include <core/threadpool_helpers.hpp>
+
 #include <functional>
 #include <thread>
 #include <atomic>
@@ -56,12 +58,23 @@ namespace ctpl {
                     return false;
                 v = this->q.front();
                 this->q.pop();
+                {
+                    std::lock_guard lk(threadpool::mutex);
+                    threadpool::tasks_in_queue = this->q.size();
+                }
+
+                threadpool::cv.notify_one();
                 return true;
             }
             bool empty() {
                 std::unique_lock<std::mutex> lock(this->mutex);
                 return this->q.empty();
             }
+
+            size_t size() {
+                return q.size();
+            }
+
         private:
             std::queue<T> q;
             std::mutex mutex;
@@ -195,6 +208,10 @@ namespace ctpl {
             std::unique_lock<std::mutex> lock(this->mutex);
             this->cv.notify_one();
             return pck->get_future();
+        }
+
+        size_t get_q_size() {
+            return q.size();
         }
 
 

@@ -21,11 +21,10 @@ constexpr int CLIENT_CLOSED_CONN = 1;
 
 static uint32_t convert_header_to_num(const char *header)
 {
-    char *endptr;
 	int ret;
 
-	ret = strtol(header, &endptr, 10);
-	if (ret >= 0)
+	ret = std::atoi(header);
+	if (ret > 0)
 		return ret;
 
 	return 0;
@@ -51,6 +50,9 @@ static int read_header(const int index)
     if (clients.c_clients[index].header_bytes_rd == client::HEADER_SIZE) {
         clients.c_clients[index].header_done = true;
         clients.c_clients[index].body_length = convert_header_to_num(clients.c_clients[index].header);
+        if (clients.c_clients[index].body_length > client::BODY_SIZE)
+            return HEADER_READ_ERROR; // stop the buffer from overflowing
+
         return HEADER_DONE;
     }
 
@@ -118,15 +120,16 @@ static void do_read_header(const int index)
     }
 }
 
-int request::handle_request(int id, const int index)
+void request::handle_request(int id, const int index)
 {
     auto &clients = clients::clients_s::get_instance();
     std::lock_guard<std::mutex> lk(clients.c_clients[index].read_mutex);
+    if (clients.p_clients[index].fd == -1)
+        return;
+
     if (clients.c_clients[index].header_done == true) {
         do_read_body(index);
     } else {
         do_read_header(index);
     }
-
-    return 0;
 }

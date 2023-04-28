@@ -4,6 +4,7 @@
 #include "request.hpp"
 #include "threadpool.hpp"
 
+#include <chrono>
 #include <errno.h>
 #include <fcntl.h>
 #include <functional>
@@ -14,12 +15,29 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-static void process(clients::clients_s &clients, int num_fds) 
+static void process(clients::clients_s &clients, int num_fds)
 {
+    static bool status = false;
     for (int i = 0; (num_fds > 0) && (i < clients::MAX_CLIENTS); ++i) {
         if (clients.p_clients[i].revents & POLLIN) {
             clients.p_clients[i].revents = 0;
-            threadpool::threadpool.push(request::handle_request, i);
+            while (1) {
+                if (threadpool::g_threadpool.get_q_size() > threadpool::MAX_QUEUE_SIZE) {
+                    {
+                        std::unique_lock lk(threadpool::mutex);
+                        status = threadpool::cv.wait_for(lk, std::chrono::milliseconds(5),
+                                                []{return ((threadpool::tasks_in_queue < threadpool::MAX_QUEUE_SIZE) ||
+                                                           (threadpool::tasks_in_queue == 0));});
+                        if (status) {
+                            break;
+                        }
+                    }
+                } else {
+                    break;
+                }
+            }
+
+            threadpool::g_threadpool.push(request::handle_request, i);
             num_fds--;
         }
     }
@@ -95,6 +113,8 @@ void tcp_socket::do_poll()
 			fprintf(stderr, "rd_from_clients() poll error\n%d", errno);
 			exit(errno);
 		} else if (num_fds == 0) { // no data sent yet, poll again
+            //std::cout << "Pool size after: ";
+            //std::cout << threadpool::g_threadpool.get_q_size();
 			continue;
 		}
 	}

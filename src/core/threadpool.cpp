@@ -1,4 +1,4 @@
 #include "threadpool.hpp"
 
-// global thread worker pool
-ctpl::thread_pool threadpool::threadpool(std::thread::hardware_concurrency() + 1);
+// the global threadpool for handling requests
+ctpl::thread_pool threadpool::g_threadpool(std::thread::hardware_concurrency());
