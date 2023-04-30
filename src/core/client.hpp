@@ -1,17 +1,15 @@
 #pragma once
 
-#include <nlohmann/json_fwd.hpp>
 #include <mutex>
+#include <rapidjson/document.h>
 #include <stdint.h>
 #include <string>
 #include <string.h>
 
-using json = nlohmann::json;
-
 namespace client {
 
-constexpr int BODY_SIZE   = 8192;
-constexpr int HEADER_SIZE = 8;
+static constexpr int BODY_SIZE   = 8192;
+static constexpr int HEADER_SIZE = 8;
 
 // anytime a client makes a change to an instance variable
 // the read mutex needs to be locked
@@ -26,7 +24,7 @@ struct client_t {
     std::mutex        write_mutex;
 
     void reset();
-    int  body_to_json(json &json);
+    int  body_to_json(rapidjson::Document &json);
 };
 
 } // END namespace client

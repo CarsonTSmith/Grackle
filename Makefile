@@ -12,7 +12,6 @@ COMM_DIR          := $(SDIR)/common
 UTIL_DIR          := $(SDIR)/utils
 SERV_DIR          := $(SDIR)/service
 LOGG_DIR          := $(SDIR)/logger
-JSON_DIR          := libs/json
 
 CORE_ODIR         := $(CORE_DIR)/.objs
 CONT_ODIR         := $(CONT_DIR)/.objs
@@ -20,7 +19,6 @@ COMM_ODIR         := $(COMM_DIR)/.objs
 UTIL_ODIR         := $(UTIL_DIR)/.objs
 SERV_ODIR         := $(SERV_DIR)/.objs
 LOGG_ODIR         := $(LOGG_DIR)/.objs
-JSON_ODIR         := $(JSON_DIR)/.objs
 
 CORE_DEP_DIR      := $(CORE_DIR)/.deps
 CONT_DEP_DIR      := $(CONT_DIR)/.deps
@@ -31,20 +29,10 @@ LOGG_DEP_DIR      := $(LOGG_DIR)/.deps
 
 BDIR              := bin
 
-SHARED_LIBS_DIR  := $(BDIR)/libs
-
 #Include paths
 N_JSON_DIR    := include
 
-INC           := -I$(SDIR) -I$(N_JSON_DIR) -I$(JSON_DIR)
-
-#Link paths
-SHARED_LIB_PATHS := -L$(SHARED_LIBS_DIR)
-
-# Shared libs for linking
-SHARED_LIBS := -lsimdjson
-
-LDFLAGS := -Wl,-soname,libsimdjson.so
+INC           := -I$(SDIR) -I$(N_JSON_DIR)
 
 # -- TODO: customize the list below for your project ---
 # List of source .c files used with the project
@@ -72,7 +60,6 @@ LOGG_OBJFILES := $(LOGG_SRCS:$(LOGG_DIR)/%.cpp=$(LOGG_ODIR)/%.o)
 
 # Add all warnings/errors to cflags default.  This is not required but is a best practice
 CFLAGS            := -std=c++17 -Wall -Werror
-SHARED_LIB_CFLAGS := -std=c++17 -O2 -fPIC
 
 # Build the app you've specified in APPNAME for the "all" or "default" target
 all: dirs debug profile $(APPNAME)
@@ -84,7 +71,6 @@ dirs:
 	@mkdir -p $(UTIL_ODIR)
 	@mkdir -p $(SERV_ODIR)
 	@mkdir -p $(LOGG_ODIR)
-	@mkdir -p $(JSON_ODIR)
 	
 	@mkdir -p $(CORE_DEP_DIR)
 	@mkdir -p $(CONT_DEP_DIR)
@@ -95,11 +81,10 @@ dirs:
 
 	@mkdir -p $(BDIR)
 
-	@mkdir -p $(SHARED_LIBS_DIR)
 
 debug:
 ifeq ($(DEBUG), 0)
-CFLAGS += -O2 -DNDEBUG
+CFLAGS += -O3 -DNDEBUG
 else
 CFLAGS += -g -O0
 endif
@@ -109,23 +94,6 @@ ifeq ($(PROFILE), 1)
 CFLAGS  += -pg
 LDFLAGS += -pg
 endif
-
-cleannshared: ; @rm -rf $(APPNAME) \
-	$(CORE_DEP_DIR)/*.d \
-	$(CONT_DEP_DIR)/*.d \
-	$(COMM_DEP_DIR)/*.d \
-	$(UTIL_DEP_DIR)/*.d \
-	$(SERV_DEP_DIR)/*.d \
-	$(LOGG_DEP_DIR)/*.d \
-	\
-	$(CONT_ODIR)/*.o \
-	$(CORE_ODIR)/*.o \
-	$(COMM_ODIR)/*.o \
-	$(UTIL_ODIR)/*.o \
-	$(SERV_ODIR)/*.o \
-	$(LOGG_ODIR)/*.o \
-
-	@echo Grackle cleaned except for shared libs and shared objects
 
 # Remove all build intermediates and output file
 clean: ; @rm -rf $(APPNAME) \
@@ -142,22 +110,19 @@ clean: ; @rm -rf $(APPNAME) \
 	$(UTIL_ODIR)/*.o \
 	$(SERV_ODIR)/*.o \
 	$(LOGG_ODIR)/*.o \
-	$(JSON_ODIR)/*.o \
 	\
-	$(SHARED_LIBS_DIR)/*.so
 
 	@echo Grackle cleaned
 
 # Build the application by running the link step with all objfile inputs
-$(APPNAME): $(SHARED_LIBS_DIR)/libsimdjson.so \
-			$(CORE_OBJFILES) \
+$(APPNAME): $(CORE_OBJFILES) \
 			$(CONT_OBJFILES) \
 			$(COMM_OBJFILES) \
 			$(UTIL_OBJFILES) \
 			$(SERV_OBJFILES) \
 			$(LOGG_OBJFILES)
 	@echo Linking Grackle
-	@$(CXX) $(SHARED_LIB_PATHS) $(LDFLAGS) $(SHARED_LIBS) $^ -o $(APPNAME)
+	@$(CXX) $(LDFLAGS) $^ -o $(APPNAME)
 	@echo Grackle built successfully
 
 # The below content is from  http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
@@ -217,16 +182,6 @@ $(SERV_ODIR)/%.o: $(SERV_DIR)/%.cpp $(SERV_DEP_DIR)/%.d | $(SERV_DEP_DIR)
 
 $(LOGG_ODIR)/%.o: $(LOGG_DIR)/%.cpp $(LOGG_DEP_DIR)/%.d | $(LOGG_DEP_DIR)
 	@$(LOGG_COMPILE.cpp) $(OUTPUT_OPTION) $<
-	@echo Built $@
-
-# Shared Library Rules
-$(SHARED_LIBS_DIR)/libsimdjson.so: $(JSON_ODIR)/simdjson.o
-	@$(CXX) -shared -o $@ $<
-	@echo Built $@
-
-# Shared Library Objects
-$(JSON_ODIR)/simdjson.o: $(JSON_DIR)/simdjson.cpp $(JSON_DIR)/simdjson.h
-	@$(CXX) $(SHARED_LIB_CFLAGS) -c $(OUTPUT_OPTION) $<
 	@echo Built $@
 
 # Use pattern rules to build a list of DEPFILES

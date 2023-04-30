@@ -1,8 +1,5 @@
 #include "client.hpp"
 
-#include <exception>
-#include <nlohmann/json.hpp>
-
 void client::client_t::reset()
 {
     memset(header, 0, sizeof(header));
@@ -13,7 +10,7 @@ void client::client_t::reset()
     body_bytes_rd   = 0;
 }
 
-int client::client_t::body_to_json(json &json)
+int client::client_t::body_to_json(rapidjson::Document &json)
 {
     int i = 0;
 
@@ -22,11 +19,11 @@ int client::client_t::body_to_json(json &json)
             break;
     }
 
-    try {
-        json = json::parse(&(body[i]));
-    } catch (std::exception &e) {
+    rapidjson::Document d;
+    d.Parse(&(body[i]));
+    if (d.HasParseError()) {
         return -1;
+    } else {
+        return 0;
     }
-    
-    return 0;
 }
