@@ -7,18 +7,16 @@
 #include <controller/echo_controller.hpp>
 #include <core/response.hpp>
 #include <rapidjson/document.h>
-#include <string>
+#include <string_view>
 #include <unordered_map>
-
-using json = nlohmann::json;
 
 static constexpr int CHAT_SEND = 1;
 static constexpr int ECHO      = 2;
 
 // The value to the "path" key in the body
-static const std::unordered_map<std::string, int> route_table {
+static const std::unordered_map<std::string_view, int> route_table {
     {"/chat/send", CHAT_SEND},
-    {"/echo" , ECHO}
+    {"/echo", ECHO}
 };
 
 int request_router::route(const int index)
@@ -31,8 +29,9 @@ int request_router::route(const int index)
     }
 
     auto it = route_table.find(d[json_keys::PATH.c_str()].GetString());
-    if (it == route_table.end())
+    if (it == route_table.end()) {
         return -1; // not found, return path not found response
+    }
     
     switch (it->second) {
     case CHAT_SEND:

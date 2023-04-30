@@ -11,8 +11,9 @@ void response::send_to_all(const std::string &msg)
 {
     auto &clients = clients::clients_s::get_instance();
     for (int i = 0; (size_t)i < clients::MAX_CLIENTS; ++i) {
-        if (clients.p_clients[i].fd == -1)
+        if (clients.p_clients[i].fd == -1) {
             continue;
+        }
 
         response::send(i, msg);
     }
@@ -24,8 +25,9 @@ void response::send(const int index, const std::string &msg)
 {
     size_t result = 0, total = 0;
 
-    if (msg.size() == 0)
+    if (msg.size() == 0) {
         return;
+    }
 
     auto &clients = clients::clients_s::get_instance();
     std::lock_guard<std::mutex> lk(clients.c_clients[index].write_mutex);
@@ -34,11 +36,13 @@ void response::send(const int index, const std::string &msg)
         if (result > 0) {
             total += result;
         } else if (result == 0) {
-            if ((errno == EAGAIN) || (errno == EWOULDBLOCK))
+            if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) {
                 return;
+            }
 
-            if (errno == EINTR)
+            if (errno == EINTR) {
                 continue;
+            }
                 
             clients::reset(index);
             return;
@@ -53,8 +57,9 @@ void response::send(const int index, const char *msg, const size_t len)
 {
     size_t result = 0, total = 0;
 
-    if (len == 0)
+    if (len == 0) {
         return;
+    }
 
     auto &clients = clients::clients_s::get_instance();
     std::lock_guard<std::mutex> lk(clients.c_clients[index].write_mutex);
@@ -63,11 +68,13 @@ void response::send(const int index, const char *msg, const size_t len)
         if (result > 0) {
             total += result;
         } else if (result == 0) {
-            if ((errno == EAGAIN) || (errno == EWOULDBLOCK))
+            if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) {
                 return;
+            }
 
-            if (errno == EINTR)
+            if (errno == EINTR) {
                 continue;
+            }
                 
             clients::reset(index);
             return;

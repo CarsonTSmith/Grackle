@@ -19,15 +19,16 @@ constexpr int BODY_READ_ERROR   = -2;
 
 constexpr int CLIENT_CLOSED_CONN = 1;
 
-static uint32_t convert_header_to_num(const char *header)
+static uint64_t convert_header_to_num(const char *header)
 {
 	int ret;
 
-	ret = std::atoi(header);
-	if (ret > 0)
+	ret = std::atoll(header);
+	if (ret > 0) {
 		return ret;
-
-	return 0;
+    } else {
+	    return 0;
+    }
 }
 
 static int read_header(const int index)
@@ -37,21 +38,24 @@ static int read_header(const int index)
                              clients.c_clients[index].header + clients.c_clients[index].header_bytes_rd,
                              client::HEADER_SIZE - clients.c_clients[index].header_bytes_rd);
     if (bytesrd < 0) {
-        if ((errno == EAGAIN) || (errno == EINTR))
+        if ((errno == EAGAIN) || (errno == EINTR)) {
             return HEADER_NOT_DONE;
+        }
 
         return HEADER_READ_ERROR;
     }
 
-    if (bytesrd == 0)
+    if (bytesrd == 0) {
         return CLIENT_CLOSED_CONN;
+    }
 
     clients.c_clients[index].header_bytes_rd += bytesrd;
     if (clients.c_clients[index].header_bytes_rd == client::HEADER_SIZE) {
         clients.c_clients[index].header_done = true;
         clients.c_clients[index].body_length = convert_header_to_num(clients.c_clients[index].header);
-        if (clients.c_clients[index].body_length > client::BODY_SIZE)
+        if (clients.c_clients[index].body_length > client::BODY_SIZE) {
             return HEADER_READ_ERROR; // stop the buffer from overflowing
+        }
 
         return HEADER_DONE;
     }
@@ -66,18 +70,21 @@ static int read_body(const int index)
                               clients.c_clients[index].body + clients.c_clients[index].body_bytes_rd,
                               clients.c_clients[index].body_length - clients.c_clients[index].body_bytes_rd);
     if (bytesrd < 0) {
-        if ((errno == EAGAIN) || (errno == EINTR))
+        if ((errno == EAGAIN) || (errno == EINTR)) {
             return BODY_NOT_DONE; 
+        }
 
         return BODY_READ_ERROR;
     }
 
-    if (bytesrd == 0)
+    if (bytesrd == 0) {
         return CLIENT_CLOSED_CONN;
+    }
 
     clients.c_clients[index].body_bytes_rd += bytesrd;
-    if (clients.c_clients[index].body_bytes_rd < clients.c_clients[index].body_length)
+    if (clients.c_clients[index].body_bytes_rd < clients.c_clients[index].body_length) {
         return BODY_NOT_DONE;
+    }
     
     return BODY_DONE;
 }
@@ -124,8 +131,9 @@ void request::handle_request(int id, const int index)
 {
     auto &clients = clients::clients_s::get_instance();
     std::lock_guard<std::mutex> lk(clients.c_clients[index].read_mutex);
-    if (clients.p_clients[index].fd == -1)
+    if (clients.p_clients[index].fd == -1) {
         return;
+    }
 
     if (clients.c_clients[index].header_done == true) {
         do_read_body(index);

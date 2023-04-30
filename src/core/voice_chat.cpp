@@ -14,7 +14,7 @@ static void send_to_one(const int udp_sockfd,
                         socklen_t addr_size)
 {
     if (sendto(udp_sockfd, msg, udp_socket::UDP_MESSAGE_SIZE, 0,
-         (struct sockaddr*)addr, addr_size) < 0) {
+               (struct sockaddr*)addr, addr_size) < 0) {
         printf("Can't send udp msg\n");
         return;
     }
@@ -26,8 +26,9 @@ static void send_to_all(const int udp_sockfd,
                         socklen_t addr_size)
 {
     for (const auto &client: voice_clients::clients) {
-        if (memcmp(&client.addr, addr, sizeof(struct sockaddr)) == 0)
+        if (memcmp(&client.addr, addr, sizeof(struct sockaddr)) == 0) {
             continue; // don't send to owner
+        }
 
         send_to_one(udp_sockfd, msg, &client.addr, addr_size);
     }

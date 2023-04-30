@@ -25,8 +25,9 @@ void clients::init()
 int clients::add(const int fd)
 {
     auto &clients = clients_s::get_instance();
-    if (clients.number_of_clients > MAX_CLIENTS)
+    if (clients.number_of_clients > MAX_CLIENTS) {
         return -1;
+    }
 
     for (int i = 0; i < MAX_CLIENTS; ++i) {
         if (clients.p_clients[i].fd == -1) {

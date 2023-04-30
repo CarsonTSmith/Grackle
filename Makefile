@@ -84,7 +84,7 @@ dirs:
 
 debug:
 ifeq ($(DEBUG), 0)
-CFLAGS += -O3 -DNDEBUG
+CFLAGS += -O2 -DNDEBUG
 else
 CFLAGS += -g -O0
 endif

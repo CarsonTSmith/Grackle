@@ -14,9 +14,9 @@ struct client_t {
     char              header[HEADER_SIZE] = {0};
     char              body[BODY_SIZE]     = {0};
     bool              header_done         = false;
-    uint32_t          body_length         = 0;
+    uint64_t          body_length         = 0;
     uint32_t          header_bytes_rd     = 0;
-    uint32_t          body_bytes_rd       = 0;
+    uint64_t          body_bytes_rd       = 0;
     std::mutex        read_mutex;
     std::mutex        write_mutex;
 

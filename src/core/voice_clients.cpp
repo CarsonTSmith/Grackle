@@ -35,8 +35,9 @@ static void prune_clients()
                     (std::chrono::system_clock::now().time_since_epoch()).count();
     std::lock_guard<std::mutex> lk(voice_clients::clients_mutex);
     for (auto &client: voice_clients::clients) {
-        if (time - client.last_message_time > UDP_TIMEOUT)
+        if (time - client.last_message_time > UDP_TIMEOUT) {
             voice_clients::clients.remove(client); // TODO: fix this, it's slow
+        }
     }
 }
 
@@ -50,8 +51,9 @@ void voice_clients::do_prune_clients()
 
 void voice_clients::add_client(const struct sockaddr *addr)
 {
-    if (client_already_exists(addr))
+    if (client_already_exists(addr)) {
         return;
+    }
     
     uint64_t time = std::chrono::duration_cast<std::chrono::milliseconds>
                     (std::chrono::system_clock::now().time_since_epoch()).count();
