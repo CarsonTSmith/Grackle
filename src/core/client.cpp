@@ -19,9 +19,8 @@ int client::client_t::body_to_json(rapidjson::Document &json)
             break;
     }
 
-    rapidjson::Document d;
-    d.Parse(&(body[i]));
-    if (d.HasParseError()) {
+    json.Parse(&(body[i]));
+    if (json.HasParseError()) {
         return -1;
     } else {
         return 0;

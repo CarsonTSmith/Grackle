@@ -6,10 +6,7 @@
 #include <controller/chat_controller.hpp>
 #include <controller/echo_controller.hpp>
 #include <core/response.hpp>
-#include <nlohmann/json.hpp>
-#include "rapidjson/document.h"
-#include "rapidjson/writer.h"
-#include "rapidjson/stringbuffer.h"
+#include <rapidjson/document.h>
 #include <string>
 #include <unordered_map>
 
@@ -26,19 +23,13 @@ static const std::unordered_map<std::string, int> route_table {
 
 int request_router::route(const int index)
 {
-    //int status;
-    //json body;
-
     auto &clients = clients::clients_s::get_instance();
-    // convert client msg body to json object
-
     rapidjson::Document d;
-    d.Parse(clients.c_clients[index].body);
+    int status = clients.c_clients[index].body_to_json(d);
+    if (status != 0) {
+        return -1; // TODO: failed, send json parse failed response to client
+    }
 
-    //status = clients.c_clients[index].body_to_json(body);
-    //if (status != 0)
-    //    return -1; // failed, send json parse failed response
-    // then get the "path" string
     auto it = route_table.find(d[json_keys::PATH.c_str()].GetString());
     if (it == route_table.end())
         return -1; // not found, return path not found response

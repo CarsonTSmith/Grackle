@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cstdint>
 #include <mutex>
 #include <rapidjson/document.h>
 
@@ -21,8 +20,8 @@ struct client_t {
     std::mutex        read_mutex;
     std::mutex        write_mutex;
 
-    void reset();
-    int  body_to_json(rapidjson::Document &json);
+    void reset(); // reset a client's buffers
+    int  body_to_json(rapidjson::Document &json); // parse body to json
 };
 
 } // END namespace client
