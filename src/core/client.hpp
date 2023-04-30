@@ -1,10 +1,8 @@
 #pragma once
 
+#include <cstdint>
 #include <mutex>
 #include <rapidjson/document.h>
-#include <stdint.h>
-#include <string>
-#include <string.h>
 
 namespace client {
 
