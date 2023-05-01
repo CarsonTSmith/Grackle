@@ -19,6 +19,6 @@ void utils::init_json_resp(rapidjson::Document &doc)
     rapidjson::Value serverkey;
     serverkey.SetString(json_keys::SERVER.c_str(), json_keys::SERVER.size(), doc.GetAllocator());
     rapidjson::Value serverval;
-    serverval.SetString(json_keys::SERVER.c_str(), json_keys::SERVER.size(), doc.GetAllocator());
+    serverval.SetString(json_keys::GRACKLE.c_str(), json_keys::GRACKLE.size(), doc.GetAllocator());
     doc.AddMember(serverkey, serverval, doc.GetAllocator());
 }
