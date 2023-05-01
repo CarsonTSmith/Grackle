@@ -1,11 +1,9 @@
 #pragma once
 
-#include <nlohmann/json_fwd.hpp>
-
-using json = nlohmann::json;
+#include <rapidjson/document.h>
 
 namespace controller {
 
-int echo_one(const int index, const json &body);
+int echo_one(const int index, const rapidjson::Document &body);
 
 }

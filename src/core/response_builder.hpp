@@ -1,12 +1,10 @@
 #pragma once
 
-#include <nlohmann/json_fwd.hpp>
+#include <rapidjson/document.h>
 #include <string>
-
-using json = nlohmann::json;
 
 namespace response_builder {
 
-std::string build(const json &body);
+std::string build(const rapidjson::Document &body);
 
 }

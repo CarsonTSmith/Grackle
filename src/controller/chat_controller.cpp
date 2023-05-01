@@ -5,7 +5,7 @@
 #include <service/chat_service.hpp>
 
 // takes the body of the incoming request
-int controller::chat_send(const json &body)
+int controller::chat_send(const rapidjson::Document &body)
 {
     std::string response = chat_service::chat_send_response(body);
     response::send_to_all(response);

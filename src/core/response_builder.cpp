@@ -2,13 +2,21 @@
 
 #include "client.hpp"
 
-#include <nlohmann/json.hpp>
+#include <rapidjson/writer.h>
+#include <rapidjson/stringbuffer.h>
 
-std::string response_builder::build(const json &body)
+std::string response_builder::build(const rapidjson::Document &body)
 {
-    std::string bytes = std::to_string(body.dump().size());
+    rapidjson::StringBuffer buffer;
+    rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+    body.Accept(writer);
+    if (buffer.GetSize() > 99999999) {
+        // response too big
+    }
+
+    std::string bytes = std::to_string(buffer.GetSize());
     std::string ret(client::HEADER_SIZE - bytes.size(), '0'); // TODO: need to check if size is too big
     ret += bytes;
-    ret += body.dump();
+    ret += buffer.GetString();
     return ret;
 }

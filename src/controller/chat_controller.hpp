@@ -1,11 +1,9 @@
 #pragma once
 
-#include <nlohmann/json_fwd.hpp>
-
-using json = nlohmann::json;
+#include <rapidjson/document.h>
 
 namespace controller {
 
-int chat_send(const json &body);
+int chat_send(const rapidjson::Document &body);
 
 }

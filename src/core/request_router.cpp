@@ -32,10 +32,10 @@ int request_router::route(const int index)
     if (it == route_table.end()) {
         return -1; // not found, return path not found response
     }
-    
+
     switch (it->second) {
     case CHAT_SEND:
-        //controller::chat_send(body);
+        controller::chat_send(d);
         break;
     case ECHO:
         response::send(index, "Hello, World!", 13);
