@@ -15,8 +15,9 @@ int client::client_t::body_to_json(rapidjson::Document &json)
     int i = 0;
 
     for (i = 0; i < client::BODY_SIZE; ++i) {
-        if (body[i] == '{')
+        if (body[i] == '{') {
             break;
+        }
     }
 
     json.Parse(&(body[i]));
