@@ -8,9 +8,10 @@
 std::string chat_service::chat_send_response(const rapidjson::Document &body)
 {
     rapidjson::Document response_body;
+    std::string response;
     
     utils::init_json_resp(response_body); // required
-
+    
     // ["path"]
     rapidjson::Value pathkey;
     pathkey.SetString(json_keys::PATH.c_str(), json_keys::PATH.size(), response_body.GetAllocator());
@@ -32,6 +33,6 @@ std::string chat_service::chat_send_response(const rapidjson::Document &body)
     usernameval.SetString(body[json_keys::USERNAME.c_str()].GetString(), body[json_keys::USERNAME.c_str()].GetStringLength(), response_body.GetAllocator());
     response_body.AddMember(usernamekey, usernameval, response_body.GetAllocator());
 
-    std::string response = response_builder::build(response_body);
+    response = response_builder::build(response_body);
     return response;
 }

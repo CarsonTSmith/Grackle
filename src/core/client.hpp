@@ -1,5 +1,6 @@
 #pragma once
 
+#include <atomic>
 #include <mutex>
 #include <rapidjson/document.h>
 
@@ -14,11 +15,12 @@ struct client_t {
     char              header[HEADER_SIZE] = {0};
     char              body[BODY_SIZE]     = {0};
     bool              header_done         = false;
-    uint64_t          body_length         = 0;
+    uint32_t          body_length         = 0;
     uint32_t          header_bytes_rd     = 0;
-    uint64_t          body_bytes_rd       = 0;
+    uint32_t          body_bytes_rd       = 0;
     std::mutex        read_mutex;
     std::mutex        write_mutex;
+    std::atomic<bool> is_processing       = false;
 
     void reset(); // reset a client's buffers
     int  body_to_json(rapidjson::Document &json); // parse body to json

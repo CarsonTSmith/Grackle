@@ -8,7 +8,6 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <functional>
-#include <future>
 #include <netinet/in.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,14 +19,19 @@ static void process(clients::clients_s &clients, int num_fds)
     static bool status = false;
     for (int i = 0; (num_fds > 0) && (i < clients::MAX_CLIENTS); ++i) {
         if (clients.p_clients[i].revents & POLLIN) {
+            if (clients.c_clients[i].is_processing) {
+                num_fds--;
+                continue;
+            }
+
+            clients.c_clients[i].is_processing = true;
             clients.p_clients[i].revents = 0;
             while (1) {
                 if (threadpool::g_threadpool.get_q_size() > threadpool::MAX_QUEUE_SIZE) {
                     {
                         std::unique_lock lk(threadpool::mutex);
                         status = threadpool::cv.wait_for(lk, std::chrono::milliseconds(5),
-                                                []{return ((threadpool::tasks_in_queue < threadpool::MAX_QUEUE_SIZE) ||
-                                                           (threadpool::tasks_in_queue == 0));});
+                                                []{return (threadpool::tasks_in_queue < threadpool::MAX_QUEUE_SIZE);});
                         if (status) {
                             break;
                         }
@@ -113,8 +117,6 @@ void tcp_socket::do_poll()
 			fprintf(stderr, "rd_from_clients() poll error\n%d", errno);
 			exit(errno);
 		} else if (num_fds == 0) { // no data sent yet, poll again
-            //std::cout << "Pool size after: ";
-            //std::cout << threadpool::g_threadpool.get_q_size();
 			continue;
 		}
 	}

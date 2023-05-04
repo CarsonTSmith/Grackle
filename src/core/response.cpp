@@ -11,11 +11,9 @@ void response::send_to_all(const std::string &msg)
 {
     auto &clients = clients::clients_s::get_instance();
     for (int i = 0; (size_t)i < clients::MAX_CLIENTS; ++i) {
-        if (clients.p_clients[i].fd == -1) {
-            continue;
+        if (clients.p_clients[i].fd != -1) {
+            response::send(i, msg);
         }
-
-        response::send(i, msg);
     }
 }
 

@@ -19,11 +19,11 @@ constexpr int BODY_READ_ERROR   = -2;
 
 constexpr int CLIENT_CLOSED_CONN = 1;
 
-static uint64_t convert_header_to_num(const char *header)
+static uint32_t convert_header_to_num(const char *header)
 {
 	int ret;
 
-	ret = std::atoll(header);
+	ret = std::atoi(header);
 	if (ret > 0) {
 		return ret;
     } else {
@@ -140,4 +140,6 @@ void request::handle_request(int id, const int index)
     } else {
         do_read_header(index);
     }
+
+    clients.c_clients[index].is_processing = false;
 }
