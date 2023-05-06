@@ -49,6 +49,5 @@ void clients::reset(const int index)
     clients.p_clients[index].revents = 0;
 
     clients.c_clients[index].reset();
-    
     clients.number_of_clients--;
 }

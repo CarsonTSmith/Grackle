@@ -140,6 +140,4 @@ void request::handle_request(int id, const int index)
     } else {
         do_read_header(index);
     }
-
-    clients.c_clients[index].is_processing = false;
 }
