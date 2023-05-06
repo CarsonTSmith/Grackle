@@ -16,7 +16,6 @@
 
 static void process(clients::clients_s &clients, int num_fds)
 {
-    static bool status = false;
     for (int i = 0; (num_fds > 0) && (i < clients::MAX_CLIENTS); ++i) {
         if (clients.p_clients[i].revents & POLLIN) {
             if (clients.c_clients[i].is_processing) {
@@ -25,12 +24,11 @@ static void process(clients::clients_s &clients, int num_fds)
             }
 
             clients.c_clients[i].is_processing = true;
-            clients.p_clients[i].revents = 0;
             while (1) {
                 if (threadpool::g_threadpool.get_q_size() > threadpool::MAX_QUEUE_SIZE) {
                     {
                         std::unique_lock lk(threadpool::mutex);
-                        status = threadpool::cv.wait_for(lk, std::chrono::milliseconds(5),
+                        bool status = threadpool::cv.wait_for(lk, std::chrono::milliseconds(5),
                                                 []{return (threadpool::tasks_in_queue < threadpool::MAX_QUEUE_SIZE);});
                         if (status) {
                             break;

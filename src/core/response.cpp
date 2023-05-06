@@ -22,7 +22,7 @@ void response::send_to_all(const std::string &msg)
 // msg is the string being sent
 void response::send(const int index, const std::string &msg)
 {
-    size_t result = 0, total = 0;
+    ssize_t result = 0, total = 0;
 
     if (msg.size() == 0) {
         return;
@@ -30,7 +30,7 @@ void response::send(const int index, const std::string &msg)
 
     auto &clients = clients::clients_s::get_instance();
     std::lock_guard<std::mutex> lk(clients.c_clients[index].write_mutex);
-    while (total < msg.size()) {
+    while (total < (ssize_t)msg.size()) {
         result = send(clients.p_clients[index].fd, msg.c_str() + total, msg.size() - total, MSG_NOSIGNAL);
         if (result > 0) {
             total += result;
