@@ -1,6 +1,5 @@
 #pragma once
 
-#include <atomic>
 #include <mutex>
 #include <rapidjson/document.h>
 
@@ -20,7 +19,6 @@ struct client_t {
     uint32_t          body_bytes_rd       = 0;
     std::mutex        read_mutex;
     std::mutex        write_mutex;
-    std::atomic<bool> is_processing       = false;
 
     void reset(); // reset a client's buffers
     int  body_to_json(rapidjson::Document &json); // parse body to json

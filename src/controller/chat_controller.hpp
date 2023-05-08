@@ -5,5 +5,6 @@
 namespace controller {
 
 int chat_send(const rapidjson::Document &body);
+int get_chatrooms(const rapidjson::Document &body);
 
 }

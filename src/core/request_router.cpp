@@ -10,13 +10,16 @@
 #include <string_view>
 #include <unordered_map>
 
-static constexpr int CHAT_SEND = 1;
-static constexpr int ECHO      = 2;
+static constexpr int ECHO          = -1;
+static constexpr int CHAT_SEND     = 1;
+static constexpr int GET_CHATROOMS = 2;
+
 
 // The value to the "path" key in the body
 static const std::unordered_map<std::string_view, int> route_table {
+    {"/echo", ECHO},
     {"/chat/send", CHAT_SEND},
-    {"/echo", ECHO}
+    {"/chat/chatrooms", GET_CHATROOMS}
 };
 
 int request_router::route(const int index)
@@ -34,13 +37,15 @@ int request_router::route(const int index)
     }
 
     switch (it->second) {
-    case CHAT_SEND:
-        controller::chat_send(d);
-        break;
     case ECHO:
         response::send(index, "Hello, World!", 13);
         //controller::echo_one(index, body);
         break;
+    case CHAT_SEND:
+        controller::chat_send(d);
+        break;
+    case GET_CHATROOMS:
+        //controller::get_chatrooms(d);
     default:
         // error response
         break;

@@ -8,7 +8,6 @@ void client::client_t::reset()
     body_length     = 0;
     header_bytes_rd = 0;
     body_bytes_rd   = 0;
-    is_processing   = false;
 }
 
 int client::client_t::body_to_json(rapidjson::Document &json)

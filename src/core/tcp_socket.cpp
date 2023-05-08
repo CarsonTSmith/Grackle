@@ -18,12 +18,6 @@ static void process(clients::clients_s &clients, int num_fds)
 {
     for (int i = 0; (num_fds > 0) && (i < clients::MAX_CLIENTS); ++i) {
         if (clients.p_clients[i].revents & POLLIN) {
-            if (clients.c_clients[i].is_processing) {
-                num_fds--;
-                continue;
-            }
-
-            clients.c_clients[i].is_processing = true;
             while (1) {
                 if (threadpool::g_threadpool.get_q_size() > threadpool::MAX_QUEUE_SIZE) {
                     {

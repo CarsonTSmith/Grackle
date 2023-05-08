@@ -130,8 +130,12 @@ static void do_read_header(const int index)
 void request::handle_request(int id, const int index)
 {
     auto &clients = clients::clients_s::get_instance();
-    std::lock_guard<std::mutex> lk(clients.c_clients[index].read_mutex);
+    if (!clients.c_clients[index].read_mutex.try_lock()) {
+        return;
+    }
+
     if (clients.p_clients[index].fd == -1) {
+        clients.c_clients[index].read_mutex.unlock();
         return;
     }
 
@@ -140,4 +144,6 @@ void request::handle_request(int id, const int index)
     } else {
         do_read_header(index);
     }
+
+    clients.c_clients[index].read_mutex.unlock();
 }
