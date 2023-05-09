@@ -11,7 +11,7 @@ std::forward_list<voice_client::voice_client_t> voice_clients::clients;
 
 std::mutex voice_clients::clients_mutex;
 
-constexpr int UDP_TIMEOUT = 5000;
+constexpr int UDP_TIMEOUT = 5000000; // microseconds (5s)
 
 static bool client_already_exists(const struct sockaddr *addr)
 {
@@ -45,7 +45,7 @@ void voice_clients::do_prune_clients()
 {
     while (1) {
         prune_clients();
-        usleep(UDP_TIMEOUT / 2);
+        usleep(UDP_TIMEOUT);
     }
 }
 
