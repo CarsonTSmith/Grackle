@@ -12,3 +12,12 @@ int controller::chat_send(const rapidjson::Document &body)
     chatlog::chatlog.add(response);
     return 0;
 }
+
+
+
+int controller::create_chatroom(const rapidjson::Document &body)
+{
+    std::string response = chat_service::create_chatroom_response(body);
+    response::send_to_all(response);
+    return 0;
+}

@@ -8,14 +8,20 @@
 
 namespace chatroom {
 
+
+
 struct hash {
     std::size_t operator() (std::shared_ptr<chat_user::chat_user_t> const &p) const;
 };
+
+
 
 struct compare {
     size_t operator() (const std::shared_ptr<chat_user::chat_user_t> &a,
                        const std::shared_ptr<chat_user::chat_user_t> &b) const;
 };
+
+
 
 class chatroom_t {
 private:
@@ -24,11 +30,14 @@ private:
     std::mutex m_mutex; // synchronize access to the chatroom
 
 public:
+    chatroom_t(std::string &&name);
     chatroom_t(const std::string &name);
-    ~chatroom_t();
+    ~chatroom_t() = default;
 
-    bool add_user(std::shared_ptr<chat_user::chat_user_t> &user);
+    bool add_user(std::shared_ptr<chat_user::chat_user_t> &&user);
     bool remove_user(const int tcp_client_index);
 };
+
+
 
 }
