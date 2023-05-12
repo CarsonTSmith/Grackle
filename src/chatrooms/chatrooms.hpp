@@ -10,7 +10,7 @@ using rooms_it = std::unordered_set<std::shared_ptr<chatroom::chatroom_t>>::iter
 
 private:
     std::unordered_set<std::shared_ptr<chatroom::chatroom_t>> m_rooms;
-    std::mutex m_mutex;
+    std::recursive_mutex m_mutex;
 
 public:
     chatrooms_t() = default;
@@ -22,6 +22,8 @@ public:
                   std::shared_ptr<chat_user::chat_user_t> &&user);
     bool remove_user(const std::string &chatroom_name, 
                      const int tcp_client_index);
+    int  get_num_users_in_chatroom(const std::string &chatroom_name);
+    void send_msg_to_chatroom(const std::string &chatroom_name, const std::string &msg);
 
 private:
     rooms_it find_chatroom(const std::string &chatroom_name);

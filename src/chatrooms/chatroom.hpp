@@ -36,6 +36,8 @@ public:
 
     bool add_user(std::shared_ptr<chat_user::chat_user_t> &&user);
     bool remove_user(const int tcp_client_index);
+    int  get_num_users();
+    void send_msg_to_users(const std::string &msg);
 };
 
 

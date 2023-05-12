@@ -1,5 +1,9 @@
 #include "chatroom.hpp"
 
+#include <core/response.hpp>
+
+
+
 std::size_t chatroom::hash::operator() (const std::shared_ptr<chat_user::chat_user_t> &p) const 
 {
     return std::hash<int>()(p->m_tcp_client_index);
@@ -46,5 +50,24 @@ bool chatroom::chatroom_t::remove_user(const int tcp_client_index)
         return true;
     } else {
         return false;
+    }
+}
+
+
+
+int chatroom::chatroom_t::get_num_users()
+{
+    std::lock_guard<std::mutex> lk(m_mutex);
+    auto num_users = m_users.size();
+    return num_users;
+}
+
+
+
+void chatroom::chatroom_t::send_msg_to_users(const std::string &msg)
+{
+    std::lock_guard<std::mutex> lk(m_mutex);
+    for (const auto &user: m_users) {
+        response::send(user->m_tcp_client_index, msg);
     }
 }

@@ -5,19 +5,32 @@
 #include <utils/basic_json_resp.hpp>
 #include <utils/date_time.hpp>
 
-std::string chat_service::chat_send_response(const rapidjson::Document &body)
+
+
+using namespace rapidjson;
+
+
+
+std::string chat_service::chat_send_response(const Document &body)
 {
-    rapidjson::Document response_body;
+    Document response_body;
     std::string response;
     
     utils::init_json_resp(response_body, body); // required
 
     // ["message"]
-    rapidjson::Value messagekey;
+    Value messagekey;
     messagekey.SetString(json_keys::MESSAGE.c_str(), json_keys::MESSAGE.size(), response_body.GetAllocator());
-    rapidjson::Value messageval;
+    Value messageval;
     messageval.SetString(body[json_keys::MESSAGE.c_str()].GetString(), body[json_keys::MESSAGE.c_str()].GetStringLength(), response_body.GetAllocator());
     response_body.AddMember(messagekey, messageval, response_body.GetAllocator());
+
+    // ["chatroom"]
+    Value chatroomkey;
+    chatroomkey.SetString(json_keys::CHATROOM.c_str(), json_keys::CHATROOM.size(), response_body.GetAllocator());
+    Value chatroomval;
+    chatroomval.SetString(body[json_keys::CHATROOM.c_str()].GetString(), body[json_keys::CHATROOM.c_str()].GetStringLength(), response_body.GetAllocator());
+    response_body.AddMember(chatroomkey, chatroomval, response_body.GetAllocator());
 
     response = response_builder::build(response_body);
     return response;
@@ -25,17 +38,18 @@ std::string chat_service::chat_send_response(const rapidjson::Document &body)
 
 
 
-std::string chat_service::create_chatroom_response(const rapidjson::Document &body)
+
+std::string chat_service::create_chatroom_response(const Document &body)
 {
-    rapidjson::Document response_body;
+    Document response_body;
     std::string response;
     
     utils::init_json_resp(response_body, body); // required
 
     // ["chatroom"]
-    rapidjson::Value chatroomkey;
+    Value chatroomkey;
     chatroomkey.SetString(json_keys::CHATROOM.c_str(), json_keys::CHATROOM.size(), response_body.GetAllocator());
-    rapidjson::Value chatroomval;
+    Value chatroomval;
     chatroomval.SetString(body[json_keys::CHATROOM.c_str()].GetString(), body[json_keys::CHATROOM.c_str()].GetStringLength(), response_body.GetAllocator());
     response_body.AddMember(chatroomkey, chatroomval, response_body.GetAllocator());
 
