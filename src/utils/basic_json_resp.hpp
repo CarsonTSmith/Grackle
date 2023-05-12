@@ -4,6 +4,8 @@
 
 namespace utils {
 
-    void init_json_resp(rapidjson::Document &doc);
+    // body is from the incoming request
+    // doc is the outgoing json request document
+    void init_json_resp(rapidjson::Document &doc, const rapidjson::Document &body);
 
 }

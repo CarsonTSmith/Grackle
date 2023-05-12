@@ -10,14 +10,7 @@ std::string chat_service::chat_send_response(const rapidjson::Document &body)
     rapidjson::Document response_body;
     std::string response;
     
-    utils::init_json_resp(response_body); // required
-    
-    // ["path"]
-    rapidjson::Value pathkey;
-    pathkey.SetString(json_keys::PATH.c_str(), json_keys::PATH.size(), response_body.GetAllocator());
-    rapidjson::Value pathval;
-    pathval.SetString(body[json_keys::PATH.c_str()].GetString(), body[json_keys::PATH.c_str()].GetStringLength(), response_body.GetAllocator());
-    response_body.AddMember(pathkey, pathval, response_body.GetAllocator());
+    utils::init_json_resp(response_body, body); // required
 
     // ["message"]
     rapidjson::Value messagekey;
@@ -26,12 +19,25 @@ std::string chat_service::chat_send_response(const rapidjson::Document &body)
     messageval.SetString(body[json_keys::MESSAGE.c_str()].GetString(), body[json_keys::MESSAGE.c_str()].GetStringLength(), response_body.GetAllocator());
     response_body.AddMember(messagekey, messageval, response_body.GetAllocator());
 
-    //["username"]
-    rapidjson::Value usernamekey;
-    usernamekey.SetString(json_keys::USERNAME.c_str(), json_keys::USERNAME.size(), response_body.GetAllocator());
-    rapidjson::Value usernameval;
-    usernameval.SetString(body[json_keys::USERNAME.c_str()].GetString(), body[json_keys::USERNAME.c_str()].GetStringLength(), response_body.GetAllocator());
-    response_body.AddMember(usernamekey, usernameval, response_body.GetAllocator());
+    response = response_builder::build(response_body);
+    return response;
+}
+
+
+
+std::string chat_service::create_chatroom_response(const rapidjson::Document &body)
+{
+    rapidjson::Document response_body;
+    std::string response;
+    
+    utils::init_json_resp(response_body, body); // required
+
+    // ["chatroom"]
+    rapidjson::Value chatroomkey;
+    chatroomkey.SetString(json_keys::CHATROOM.c_str(), json_keys::CHATROOM.size(), response_body.GetAllocator());
+    rapidjson::Value chatroomval;
+    chatroomval.SetString(body[json_keys::CHATROOM.c_str()].GetString(), body[json_keys::CHATROOM.c_str()].GetStringLength(), response_body.GetAllocator());
+    response_body.AddMember(chatroomkey, chatroomval, response_body.GetAllocator());
 
     response = response_builder::build(response_body);
     return response;

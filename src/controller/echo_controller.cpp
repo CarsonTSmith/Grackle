@@ -11,13 +11,7 @@ int controller::echo_one(const int index, const rapidjson::Document &body)
 {
     rapidjson::Document response_body;
 
-    utils::init_json_resp(response_body); // required
-
-    rapidjson::Value pathkey;
-    pathkey.SetString(json_keys::PATH.c_str(), json_keys::PATH.size(), response_body.GetAllocator());
-    rapidjson::Value pathval;
-    pathval.SetString(body[json_keys::PATH.c_str()].GetString(), body[json_keys::PATH.c_str()].GetStringLength(), response_body.GetAllocator());
-    response_body.AddMember(pathkey, pathval, response_body.GetAllocator());
+    utils::init_json_resp(response_body, body); // required
 
     rapidjson::Value messagekey;
     messagekey.SetString(json_keys::MESSAGE.c_str(), json_keys::MESSAGE.size(), response_body.GetAllocator());
