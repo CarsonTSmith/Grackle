@@ -11,7 +11,8 @@ int controller::chat_send(const rapidjson::Document &body)
 {
     std::string response = chat_service::chat_send_response(body);
     auto &chatrooms = chatrooms::chatroom_s::get_instance();
-    chatrooms.rooms.send_msg_to_chatroom(body[json_keys::CHATROOM.c_str()].GetString(), response);
+    chatrooms.rooms.send_msg_to_chatroom(chatrooms::MAIN_CHATROOM, response);
+    //chatrooms.rooms.send_msg_to_chatroom(body[json_keys::CHATROOM.c_str()].GetString(), response);
     //response::send_to_all(response);
     //chatlog::chatlog.add(response);
     return 0;

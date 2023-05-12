@@ -26,11 +26,13 @@ std::string chat_service::chat_send_response(const Document &body)
     response_body.AddMember(messagekey, messageval, response_body.GetAllocator());
 
     // ["chatroom"]
+    /*
     Value chatroomkey;
     chatroomkey.SetString(json_keys::CHATROOM.c_str(), json_keys::CHATROOM.size(), response_body.GetAllocator());
     Value chatroomval;
     chatroomval.SetString(body[json_keys::CHATROOM.c_str()].GetString(), body[json_keys::CHATROOM.c_str()].GetStringLength(), response_body.GetAllocator());
     response_body.AddMember(chatroomkey, chatroomval, response_body.GetAllocator());
+    */
 
     response = response_builder::build(response_body);
     return response;

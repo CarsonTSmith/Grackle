@@ -4,6 +4,8 @@
 
 namespace chatrooms {
 
+
+
 class chatrooms_t {
 
 using rooms_it = std::unordered_set<std::shared_ptr<chatroom::chatroom_t>>::iterator;
@@ -29,6 +31,5 @@ private:
     rooms_it find_chatroom(const std::string &chatroom_name);
 };
 
-extern chatrooms_t g_rooms;
 
 }

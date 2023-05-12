@@ -1,10 +1,6 @@
 #include "chatrooms.hpp"
 
 
-// global chatrooms object
-chatrooms::chatrooms_t chatrooms::g_rooms;
-
-
 
 bool chatrooms::chatrooms_t::add_chatroom(std::shared_ptr<chatroom::chatroom_t> &&chatroom)
 {
