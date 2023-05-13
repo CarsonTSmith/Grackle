@@ -4,8 +4,6 @@
 #include "request.hpp"
 #include "threadpool.hpp"
 
-#include <chatrooms/chatroom_singleton.hpp>
-
 #include <chrono>
 #include <errno.h>
 #include <fcntl.h>
@@ -93,8 +91,6 @@ void tcp_socket::do_accept(const int sockfd, struct sockaddr_in *addr)
         if (index < 0) {
             close(clientfd);
         }
-
-
     }
 }
 
