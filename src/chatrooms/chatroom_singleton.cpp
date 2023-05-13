@@ -4,7 +4,7 @@
 
 chatrooms::chatroom_s::chatroom_s()
 {
-    rooms.add_chatroom(std::make_shared<chatroom::chatroom_t>(MAIN_CHATROOM));
+    rooms.add_chatroom(std::move(std::make_shared<chatroom::chatroom_t>(MAIN_CHATROOM)));
 }
 
 

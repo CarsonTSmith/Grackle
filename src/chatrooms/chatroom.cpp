@@ -1,6 +1,8 @@
 #include "chatroom.hpp"
 
+#include <core/clients.hpp>
 #include <core/response.hpp>
+
 
 
 
@@ -67,7 +69,10 @@ int chatroom::chatroom_t::get_num_users()
 void chatroom::chatroom_t::send_msg_to_users(const std::string &msg)
 {
     std::lock_guard<std::mutex> lk(m_mutex);
+    auto &clients = clients::clients_s::get_instance();
     for (const auto &user: m_users) {
-        response::send(user->m_tcp_client_index, msg);
+        if (clients.p_clients[user->m_tcp_client_index].fd != -1) {
+            response::send(user->m_tcp_client_index, msg);
+        }
     }
 }

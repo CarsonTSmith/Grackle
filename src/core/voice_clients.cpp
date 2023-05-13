@@ -58,5 +58,5 @@ void voice_clients::add_client(const struct sockaddr *addr)
     uint64_t time = std::chrono::duration_cast<std::chrono::milliseconds>
                     (std::chrono::system_clock::now().time_since_epoch()).count();
     std::lock_guard<std::mutex> lk(voice_clients::clients_mutex);
-    voice_clients::clients.emplace_front(voice_client::voice_client_t{time, *addr});
+    voice_clients::clients.emplace_front(std::move(voice_client::voice_client_t{time, *addr}));
 }
