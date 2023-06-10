@@ -1,6 +1,6 @@
 # Grackle
 
-Grackle Server is written for BSD Sockets only.
+Grackle Server is written for Linux and BSD Sockets only.
 
 To build the project follow the steps below.
 
