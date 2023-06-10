@@ -26,4 +26,9 @@ where the first 8 bytes are the length of the json body as a string.
 
 # Navigating the Code
 Under the src/ folder is where the all of the code is. The main section of the code and the main entry point can be found under  src/core/
+The path "endpoints" code can be found under src/core/request_router.hpp(cpp).
+This maps request endpoints to actions.
+
+# Some current limitations
+
 
