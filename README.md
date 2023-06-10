@@ -20,7 +20,7 @@ Then you can start the server by running the executable. By default it will list
 # Basics of what Grackle is
 Grackle is a TCP server that is similar to http. Grackle "messages" have the form
 
-00000047{"jsonkey":"jsonvalue","jsonkey1":"jsonvalue1"}
+00000070{"path":"/request/path","jsonkey":"jsonvalue","jsonkey1":"jsonvalue1"}
 
 where the first 8 bytes are the length of the json body as a string.
 
