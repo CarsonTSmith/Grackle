@@ -29,6 +29,3 @@ Under the src/ folder is where the all of the code is. The main section of the c
 The path "endpoints" code can be found under src/core/request_router.hpp(cpp).
 This maps request endpoints to actions.
 
-# Some current limitations
-
-
