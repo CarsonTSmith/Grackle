@@ -14,4 +14,4 @@ Then type "bash build.sh" or "sh build.sh"
 
 After the project is built the resulting binary executable can be found in /Grackle/bin
 
-Then you can start the server. By default it will listen on port 42125.
+Then you can start the server by running the executable. By default it will listen on port 42125.
