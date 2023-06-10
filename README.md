@@ -15,3 +15,15 @@ Then type "bash build.sh" or "sh build.sh"
 After the project is built the resulting binary executable can be found in /Grackle/bin
 
 Then you can start the server by running the executable. By default it will listen on port 42125.
+
+
+# Basics of what Grackle is
+Grackle is a TCP server that is similar to http. Grackle "messages" have the form
+
+00000047{"jsonkey":"jsonvalue","jsonkey1":"jsonvalue1"}
+
+where the first 8 bytes are the length of the json body as a string.
+
+# Navigating the Code
+Under the src/ folder is where the all of the code is. The main section of the code and the main entry point can be found under  src/core/
+
